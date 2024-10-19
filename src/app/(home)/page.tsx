@@ -12,7 +12,7 @@ export default function Home() {
 
       <div className="flex items-center w-full h-[calc(100%-51px)] ">
         <div className="flex flex-col items-center justify-center w-[50%]">
-          <h1 className="text-6xl font-bold text-center uppercase font-sans">
+          <h1 className="text-6xl font-bold text-center uppercase font-sans text-white">
             Your Personalized AI Tutor,
           </h1>
           {/* <p className="text-6xl font-bold text-center uppercase font-sans text-[#55DC49]">
