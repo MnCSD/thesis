@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="h-screen w-screen bg-gradient-to-b from-[#122316] to-[#101E13] pl-10">
+    <div className="bg-main h-screen w-full">
       <Header />
 
       <div className="flex items-center w-full h-[calc(100%-51px)] ">
@@ -41,9 +41,13 @@ export default function Home() {
           />
         </div>
 
-        <div className="flex flex-col items-start justify-end w-[50%]  h-full  ">
+        <div className="flex flex-col items-start justify-end w-[50%]  h-full ">
           <div className="relative">
-            <Image src={Figure} alt="3D Teacher" width={700} height={700} />
+            <Image
+              src={Figure}
+              alt="3D Teacher"
+              className="w-[600px] h-[700px]"
+            />
             {/* make a cloudy above his head */}
 
             <div className="w-[350px] h-[200px] bg-white absolute top-[calc(100%-550px)] -right-[calc(100%-520px)] rounded-md border-[#55DC49] border">

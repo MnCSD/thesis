@@ -118,3 +118,6 @@ body {
   }
 }
 
+.bg-main {
+  @apply bg-gradient-to-b from-[#122316] to-[#101E13] pl-10;
+} 
