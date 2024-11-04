@@ -119,5 +119,5 @@ body {
 }
 
 .bg-main {
-  @apply bg-gradient-to-b from-[#122316] to-[#101E13] pl-10;
+  @apply bg-gradient-to-b from-[#122316] to-[#101E13] lg:pl-10 pl-2;
 } 

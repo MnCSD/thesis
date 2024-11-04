@@ -22,7 +22,7 @@ interface SignInProps {
 }
 
 export const SignUpCard = ({ setState }: SignInProps) => {
-  //   const { signIn } = useAuthActions();
+  const { signIn } = useAuthActions();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,29 +31,35 @@ export const SignUpCard = ({ setState }: SignInProps) => {
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  //   const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
-  //     e.preventDefault();
+  const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  //     setPending(true);
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
 
-  //     signIn("password", {
-  //       email,
-  //       password,
-  //       flow: "signIn",
-  //     })
-  //       .catch((error) => {
-  //         setError("Invalid email or password");
-  //       })
-  //       .finally(() => {
-  //         setPending(false);
-  //       });
-  //   };
+    setPending(true);
+
+    signIn("password", {
+      name,
+      email,
+      password,
+      flow: "signUp",
+    })
+      .catch((error) => {
+        setError("Something went wrong.");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
 
   const handleProviderSignIn = (value: "github" | "google") => {
     setPending(true);
-    // signIn(value).finally(() => {
-    //   setPending(false);
-    // });
+    signIn(value).finally(() => {
+      setPending(false);
+    });
   };
 
   return (
@@ -83,6 +89,7 @@ export const SignUpCard = ({ setState }: SignInProps) => {
       )}
       <CardContent className="space-y-5 px-0 pb-0 ">
         <form
+          onSubmit={onPasswordSignIn}
           className="gap-y-2 flex flex-col"
           style={{
             gap: 10,
@@ -148,24 +155,6 @@ export const SignUpCard = ({ setState }: SignInProps) => {
             flexDirection: "column",
           }}
         >
-          <Button
-            disabled={pending}
-            onClick={() => handleProviderSignIn("google")}
-            variant={"outline"}
-            size={"lg"}
-            className="w-full relative"
-          >
-            <FcGoogle
-              style={{
-                position: "absolute",
-                top: 12,
-                left: 24,
-                transition: "transform 0.2s ease-in-out",
-              }}
-            />
-            Continue with Google
-          </Button>
-
           <Button
             disabled={pending}
             onClick={() => handleProviderSignIn("github")}

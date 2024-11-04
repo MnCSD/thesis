@@ -29,23 +29,23 @@ export const SignInCard = ({ setState }: SignInProps) => {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
-  //   const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
-  //     e.preventDefault();
+  const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  //     setPending(true);
+    setPending(true);
 
-  //     signIn("password", {
-  //       email,
-  //       password,
-  //       flow: "signIn",s
-  //     })
-  //       .catch((error) => {
-  //         setError("Invalid email or password");
-  //       })
-  //       .finally(() => {
-  //         setPending(false);
-  //       });
-  //   };
+    signIn("password", {
+      email,
+      password,
+      flow: "signIn",
+    })
+      .catch((error) => {
+        setError("Invalid email or password");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
 
   const handleProviderSignIn = (value: "github" | "google") => {
     setPending(true);
@@ -81,6 +81,7 @@ export const SignInCard = ({ setState }: SignInProps) => {
       )}
       <CardContent className="space-y-5 px-0 pb-0 ">
         <form
+          onSubmit={onPasswordSignIn}
           className="gap-y-2 flex flex-col"
           style={{
             gap: 10,
@@ -129,24 +130,6 @@ export const SignInCard = ({ setState }: SignInProps) => {
             flexDirection: "column",
           }}
         >
-          <Button
-            disabled={pending}
-            onClick={() => handleProviderSignIn("google")}
-            variant={"outline"}
-            size={"lg"}
-            className="w-full relative"
-          >
-            <FcGoogle
-              style={{
-                position: "absolute",
-                top: 12,
-                left: 24,
-                transition: "transform 0.2s ease-in-out",
-              }}
-            />
-            Continue with Google
-          </Button>
-
           <Button
             disabled={pending}
             onClick={() => handleProviderSignIn("github")}

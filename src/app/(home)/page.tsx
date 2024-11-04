@@ -3,16 +3,19 @@
 import { TypeAnimation } from "react-type-animation";
 import { Header } from "../components/header";
 import Figure from "../images/teacher-3d.png";
+import { useMediaQuery } from "usehooks-ts";
 import Image from "next/image";
 
 export default function Home() {
+  const matches = useMediaQuery("(max-width: 1024px)");
+
   return (
     <div className="bg-main h-screen w-full">
       <Header />
 
-      <div className="flex items-center w-full h-[calc(100%-51px)] ">
-        <div className="flex flex-col items-center justify-center w-[50%]">
-          <h1 className="text-6xl font-bold text-center uppercase font-sans text-white">
+      <div className="flex items-center lg:flex-row flex-col w-full h-[calc(100%-51px)] ">
+        <div className="flex flex-col items-center justify-center lg:w-[50%] w-full h-[100%]">
+          <h1 className="lg:text-6xl text-4xl font-bold text-center uppercase font-sans text-white">
             Your Personalized AI Tutor,
           </h1>
           {/* <p className="text-6xl font-bold text-center uppercase font-sans text-[#55DC49]">
@@ -30,7 +33,7 @@ export default function Home() {
             wrapper="span"
             speed={50}
             style={{
-              fontSize: "3.35rem",
+              fontSize: matches ? "3.35rem" : "1.5rem",
               display: "inline-block",
               color: "#55DC49",
               fontWeight: "bold",
@@ -41,16 +44,16 @@ export default function Home() {
           />
         </div>
 
-        <div className="flex flex-col items-start justify-end w-[50%]  h-full ">
+        <div className="flex flex-col items-start justify-end w-[100%] md:w-[50%] h-full">
           <div className="relative">
             <Image
               src={Figure}
               alt="3D Teacher"
-              className="w-[600px] h-[700px]"
+              className="lg:w-[600px] lg:h-[700px] md:-ml-10 lg:ml-0 w-full object-contain"
             />
             {/* make a cloudy above his head */}
 
-            <div className="w-[350px] h-[200px] bg-white absolute top-[calc(100%-550px)] -right-[calc(100%-520px)] rounded-md border-[#55DC49] border">
+            <div className="lg:w-[350px] lg:h-[200px] w-[250px] bg-white absolute top-[calc(100%-350px)] -right-[calc(100%-250px)] lg:top-[calc(100%-550px)] lg:-right-[calc(100%-300px)] rounded-md border-[#55DC49] border hidden md:block lg:hidden 2xl:block">
               <div className="h-10 w-10  absolute left-[-20px] top-[50%] translate-y-[-50%] rotate-45 bg-white border-[#55DC49] border-l border-b" />
               <div className="w-4 h-4 border border-black rounded-full top-1 left-[6px] absolute" />
               <div className="h-[1px] w-full absolute left-0 top-[25px] translate-y-[-50%] bg-black " />
