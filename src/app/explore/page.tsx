@@ -115,7 +115,7 @@ const ExplorePage = () => {
   }
 
   if (data?.length > 0) {
-    router.push("/dashboard");
+    router.push("/home");
   }
 
   return (
