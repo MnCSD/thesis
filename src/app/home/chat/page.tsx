@@ -1,21 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { NotebookBackground } from "./components/notebook-background";
-import { ChatContainer } from "./components/chat-container";
-import { useState } from "react";
+import { redirect } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+import { useMutation } from "convex/react";
+import { useCreateChat } from "@/features/chats/use-create-chat";
+import { useEffect } from "react";
 
 export default function ChatPage() {
-  const [messageCount, setMessageCount] = useState(0);
+  const newChatId = uuidv4();
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="relative min-h-screen bg-[#0F0F0F]"
-    >
-      <NotebookBackground messagesLength={messageCount} />
-      <ChatContainer onMessageCountChange={setMessageCount} />
-    </motion.div>
-  );
+  redirect(`/home/chat/${newChatId}`);
 }

@@ -5,8 +5,16 @@ import { useState } from "react";
 import { ChalkPen } from "./chalk-pen";
 import { Copy, Check, Code2 } from "lucide-react";
 import Figure from "../../../images/teacher-3d.png";
-import { Message } from "@/app/types";
 import { formatContent } from "@/app/utils/format-content";
+import { Id } from "../../../../../convex/_generated/dataModel";
+
+interface Message {
+  id: Id<"messages">;
+  content: string;
+  sender: "user" | "ai";
+  timestamp: Date;
+  difficulty?: string;
+}
 
 interface ChatMessageProps {
   message: Message;
@@ -161,7 +169,9 @@ export function ChatMessage({ message, isLoading }: ChatMessageProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className={`flex ${isAI ? "justify-start pl-12" : "justify-end pr-20"}`}
+      className={`flex ${isAI ? "justify-start" : "justify-end"} ${
+        isAI ? "pl-0 pr-20" : "pl-20 pr-0"
+      }`}
     >
       {isAI && (
         <div className="relative">

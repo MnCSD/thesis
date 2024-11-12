@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useAuthActions } from "@convex-dev/auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Mathematics from "../images/Matemathic.svg";
 import Physics from "../images/Research.svg";
 import Globe from "../images/Globe.svg";
@@ -14,81 +14,55 @@ import {
   Tally1,
   Tally2,
   Tally3,
-  Thermometer,
   ThermometerSnowflake,
   ThermometerSun,
+  Thermometer,
+  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import {
   LearningFrequency,
   LearningLevel,
   SubjectType,
 } from "@/features/auth/types";
+import { motion, AnimatePresence } from "framer-motion";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { useCreatePreference } from "@/features/preferences/use-create-preference";
 import { useGetPreferences } from "@/features/preferences/use-get-preferences";
 
 export const subjects: { name: SubjectType; image?: any }[] = [
-  {
-    name: "Mathematics",
-    image: Mathematics,
-  },
-  {
-    name: "Science",
-    image: Physics,
-  },
-  {
-    name: "Coding",
-    image: Board,
-  },
-  {
-    name: "Language Arts",
-    image: Globe,
-  },
-  {
-    name: "Other",
-  },
+  { name: "Mathematics", image: Mathematics },
+  { name: "Science", image: Physics },
+  { name: "Coding", image: Board },
+  { name: "Language Arts", image: Globe },
+  { name: "Other" },
 ];
 
 export const levels = [
-  {
-    name: "beginner",
-    image: Tally1,
-  },
-  {
-    name: "intermediate",
-    image: Tally2,
-  },
-  {
-    name: "advanced",
-    image: Tally3,
-  },
+  { name: "beginner", image: Tally1 },
+  { name: "intermediate", image: Tally2 },
+  { name: "advanced", image: Tally3 },
 ];
 
 export const frequencies = [
-  {
-    name: "daily",
-    image: ThermometerSun,
-  },
-  {
-    name: "weekly",
-    image: Thermometer,
-  },
-  {
-    name: "monthly",
-    image: ThermometerSnowflake,
-  },
+  { name: "daily", image: ThermometerSun },
+  { name: "weekly", image: Thermometer },
+  { name: "monthly", image: ThermometerSnowflake },
 ];
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
 
 const ExplorePage = () => {
   const { data, isLoading } = useGetPreferences();
-  const { signOut } = useAuthActions();
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [subject, setSubject] = useState<SubjectType | undefined>(undefined);
-  const [level, setLevel] = useState<LearningLevel | undefined>(undefined);
-  const [frequency, setFrequency] = useState<LearningFrequency | undefined>(
-    undefined
-  );
+  const [subject, setSubject] = useState<SubjectType>();
+  const [level, setLevel] = useState<LearningLevel>();
+  const [frequency, setFrequency] = useState<LearningFrequency>();
   const { mutate, isPending } = useCreatePreference();
 
   const handleSubmit = async () => {
@@ -102,15 +76,22 @@ const ExplorePage = () => {
     );
   };
 
-  if (!data) {
-    return null;
-  }
+  const handleBack = () => {
+    if (step > 0) setStep(step - 1);
+  };
+
+  if (!data) return null;
+  7;
 
   if (isLoading) {
     return (
-      <div className="bg-main w-full h-[100vh] overflow-hidden flex items-center justify-center pl-[0!important]">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="bg-main w-full h-screen flex items-center justify-center"
+      >
         <ClimbingBoxLoader color="#55DC49" className="rotate-45" />
-      </div>
+      </motion.div>
     );
   }
 
@@ -119,124 +100,198 @@ const ExplorePage = () => {
   }
 
   return (
-    <div className="bg-main w-full h-[100vh] overflow-hidden flex items-center justify-center flex-col py-4 pl-[0!important] px-4">
-      <div className="h-full max-w-xl md:w-[700px] w-full lg:w-[1300px] py-10 text-center">
-        <div className="flex flex-col items-center gap-y-2">
-          <h1 className="text-2xl font-semibold text-white ">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-main min-h-screen flex items-center justify-center relative overflow-hidden"
+    >
+      {/* Background gradient circles */}
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#55DC49] rounded-full filter blur-[150px] opacity-10"
+      />
+      <motion.div
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#55DC49] rounded-full filter blur-[150px] opacity-10"
+      />
+
+      <div className="max-w-4xl w-full mx-auto px-4 py-8 relative z-10">
+        <motion.div
+          variants={fadeInUp}
+          initial="initial"
+          animate="animate"
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl font-bold text-white mb-4">
             Welcome to Tutorly
           </h1>
-          <p className="text-xl font-semibold text-white">
-            Let&apos;s get you set up for a personalized learning journey.
+          <p className="text-xl text-gray-300">
+            Let&apos;s personalize your learning journey
           </p>
-        </div>
+        </motion.div>
 
-        <div
-          className={cn(
-            "h-[50vh] flex flex-col items-center justify-center gap-y-4 transition-all"
-          )}
-        >
-          <div
-            className={cn(
-              "flex flex-col items-center justify-center gap-y-4 transition-all",
-              step === 0 ? "opacity-100" : " opacity-0 hidden"
-            )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            variants={fadeInUp}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.3 }}
+            className="bg-black/30 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-white/10"
           >
-            <span className=" font-semibold text-[#55DC49] text-xl opacity-100 mb-10">
-              Pick a subject
-            </span>
-
-            {subjects.map((subject) => (
-              <div
-                onClick={() => {
-                  setStep(1);
-                  setSubject(subject.name);
-                }}
-                className="group flex items-center justify-center gap-x-2 border py-2 border-white border-opacity-20 rounded-md w-[200px] cursor-pointer transition-all  hover:border-[#55DC49] hover:border-opacity-50"
-              >
-                {subject.image && (
-                  <Image
-                    src={subject.image}
-                    alt=""
-                    className="w-6 h-6 group-hover:w-0 transition-all"
-                  />
-                )}
-
-                <span className="text-base font-semibold text-white group-hover:text-[#55DC49] transition-all">
-                  {subject.name}
-                </span>
+            {step === 0 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-[#55DC49] text-center mb-8">
+                  Pick a subject
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {subjects.map((item) => (
+                    <motion.button
+                      key={item.name}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setSubject(item.name);
+                        setStep(1);
+                      }}
+                      className={cn(
+                        "group flex items-center gap-4 p-4 rounded-xl border border-white/20",
+                        "hover:border-[#55DC49]/50 hover:bg-[#55DC49]/5 transition-all duration-300"
+                      )}
+                    >
+                      {item.image && (
+                        <div className="w-12 h-12 rounded-full bg-[#55DC49]/10 p-2 group-hover:bg-[#55DC49]/20 transition-colors">
+                          <Image
+                            src={item.image}
+                            alt=""
+                            className="w-full h-full"
+                          />
+                        </div>
+                      )}
+                      <span className="text-lg font-medium text-white group-hover:text-[#55DC49] transition-colors">
+                        {item.name}
+                      </span>
+                    </motion.button>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
-
-          <div
-            className={cn(
-              "flex flex-col items-center justify-center gap-y-4 transition-all ",
-              step === 1 ? "opacity-100" : " opacity-0 hidden"
             )}
-          >
-            <span className=" font-semibold text-[#55DC49] text-xl opacity-100 mb-10">
-              Pick a learning level
-            </span>
 
-            <div className="flex flex-col gap-y-3 lg:flex-row lg:gap-x-3">
-              {levels.map((level) => (
-                <div
-                  onClick={() => {
-                    setStep(2);
-                    setLevel(level.name as LearningLevel);
-                  }}
-                  className="group flex flex-col items-center gap-y-2 border border-white border-opacity-20 rounded-md py-2 cursor-pointer w-[150px] transition-all  hover:border-[#55DC49] hover:border-opacity-50 bg-gray-300 bg-opacity-25"
-                >
-                  <span className="text-base capitalize font-semibold text-white group-hover:text-[#55DC49] transition-all">
-                    {level.name}
-                  </span>
-
-                  <level.image className="text-white group-hover:text-[#55DC49] transition-all" />
+            {step === 1 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-[#55DC49] text-center mb-8">
+                  Choose your level
+                </h2>
+                <div className="flex flex-col md:flex-row gap-4 justify-center">
+                  {levels.map((item) => (
+                    <motion.button
+                      key={item.name}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        setLevel(item.name as LearningLevel);
+                        setStep(2);
+                      }}
+                      className="group flex flex-col items-center gap-4 p-6 rounded-xl border border-white/20
+                        hover:border-[#55DC49]/50 hover:bg-[#55DC49]/5 transition-all duration-300 w-full md:w-[180px]"
+                    >
+                      <item.image className="w-8 h-8 text-white group-hover:text-[#55DC49] transition-colors" />
+                      <span className="text-lg font-medium text-white capitalize group-hover:text-[#55DC49] transition-colors">
+                        {item.name}
+                      </span>
+                    </motion.button>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div
-            className={cn(
-              "flex flex-col items-center justify-center gap-y-4 transition-all ",
-              step === 2 ? "opacity-100" : " opacity-0 hidden"
+              </div>
             )}
-          >
-            <span className=" font-semibold text-[#55DC49] text-xl opacity-100 mb-10">
-              Choose your learning frequency
-            </span>
-            <div className="flex flex-col gap-y-3 lg:flex-row lg:gap-x-3">
-              {frequencies.map((frequency) => (
-                <div
-                  onClick={() => {
-                    setFrequency(frequency.name as LearningFrequency);
-                  }}
-                  className="group flex flex-col items-center gap-y-2 border border-white border-opacity-20 rounded-md py-2 cursor-pointer w-[150px] transition-all  hover:border-[#55DC49] hover:border-opacity-50 bg-gray-300 bg-opacity-25"
-                >
-                  <span className="text-base font-semibold capitalize text-white group-hover:text-[#55DC49] transition-all">
-                    {frequency.name}
-                  </span>
 
-                  <frequency.image className="text-white group-hover:text-[#55DC49] transition-all" />
+            {step === 2 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-[#55DC49] text-center mb-8">
+                  How often would you like to learn?
+                </h2>
+                <div className="flex flex-col md:flex-row gap-4 justify-center">
+                  {frequencies.map((item) => (
+                    <motion.button
+                      key={item.name}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() =>
+                        setFrequency(item.name as LearningFrequency)
+                      }
+                      className={cn(
+                        "group flex flex-col items-center gap-4 p-6 rounded-xl border transition-all duration-300 w-full md:w-[180px]",
+                        frequency === item.name
+                          ? "border-[#55DC49] bg-[#55DC49]/10"
+                          : "border-white/20 hover:border-[#55DC49]/50 hover:bg-[#55DC49]/5"
+                      )}
+                    >
+                      <item.image className="w-8 h-8 text-white group-hover:text-[#55DC49] transition-colors" />
+                      <span className="text-lg font-medium text-white capitalize group-hover:text-[#55DC49] transition-colors">
+                        {item.name}
+                      </span>
+                    </motion.button>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <button
-              onClick={handleSubmit}
-              className="mt-4 py-2 px-3 rounded-lg bg-opacity-80 bg-[#55DC49] text-base font-semibold text-white"
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex justify-center mt-8"
+                >
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!frequency || isPending}
+                    className="bg-[#55DC49] hover:bg-[#55DC49]/90 text-black font-semibold px-8 py-6 rounded-xl text-lg"
+                  >
+                    {isPending ? "Setting up..." : "Start Learning"}
+                  </Button>
+                </motion.div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="flex justify-between mt-6">
+          {step > 0 && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={handleBack}
+              className="flex items-center gap-2 text-white/60 hover:text-[#55DC49] transition-colors"
             >
-              Submit
-            </button>
-          </div>
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </motion.button>
+          )}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-white/40 text-sm ml-auto"
+          >
+            Step {step + 1} of 3
+          </motion.p>
         </div>
       </div>
-
-      <span className="text-gray-500 text-sm mb-2">
-        *You can change this anytime.
-      </span>
-    </div>
+    </motion.div>
   );
 };
 

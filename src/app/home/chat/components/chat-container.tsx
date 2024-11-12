@@ -2,18 +2,27 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChatMessage } from "./chat-message";
 import { ChatInput } from "./chat-input";
-import { Message } from "@/app/types";
 import { generateTutorResponse } from "@/app/utils/tutor-utils";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 
 interface ChatContainerProps {
+  chatId: string; // This is now the UUID
   onMessageCountChange: (count: number) => void;
 }
 
-export function ChatContainer({ onMessageCountChange }: ChatContainerProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export function ChatContainer({
+  chatId,
+  onMessageCountChange,
+}: ChatContainerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollTimeout = useRef<NodeJS.Timeout>();
+
+  const chat = useQuery(api.messages.getChatByUuid, { uuid: chatId });
+  const sendMessage = useMutation(api.messages.send);
+  const messages =
+    useQuery(api.messages.list, chat ? { chatId: chat._id } : "skip") || [];
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     if (scrollTimeout.current) {
@@ -34,7 +43,7 @@ export function ChatContainer({ onMessageCountChange }: ChatContainerProps) {
         clearTimeout(scrollTimeout.current);
       }
     };
-  }, [messages, onMessageCountChange, scrollToBottom]);
+  }, [messages.length, onMessageCountChange, scrollToBottom]);
 
   const formatCodeBlocks = (content: string) => {
     return content.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, language, code) => {
@@ -44,48 +53,47 @@ export function ChatContainer({ onMessageCountChange }: ChatContainerProps) {
 
   const handleSendMessage = useCallback(
     async (content: string) => {
-      if (isLoading) return;
+      if (isLoading || !chat) return;
 
-      const userMessage: Message = {
-        id: Date.now().toString(),
-        content,
-        sender: "user",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, userMessage]);
       setIsLoading(true);
       scrollToBottom("auto");
 
       try {
+        // Save user message
+        await sendMessage({
+          content,
+          chatId: chat._id,
+          sender: "user",
+        });
+
+        // Generate and save AI response
+        // @ts-ignore
         const response = await generateTutorResponse(content, messages);
         const formattedContent = formatCodeBlocks(response.content);
 
-        const aiMessage: Message = {
-          id: (Date.now() + 1).toString(),
+        await sendMessage({
           content: formattedContent,
+          chatId: chat._id,
           sender: "ai",
-          timestamp: new Date(),
-          ...(response.difficulty && { difficulty: response.difficulty }),
-        };
+          difficulty: response.difficulty,
+        });
 
-        setMessages((prev) => [...prev, aiMessage]);
         scrollToBottom();
       } catch (error) {
         console.error("Error generating response:", error);
-        const errorMessage: Message = {
-          id: (Date.now() + 1).toString(),
+        await sendMessage({
           content: "I'm having a moment. Could you try asking again?",
+          chatId: chat._id,
           sender: "ai",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, errorMessage]);
+        });
       } finally {
         setIsLoading(false);
       }
     },
-    [messages, isLoading, scrollToBottom]
+    [chat, sendMessage, messages, isLoading, scrollToBottom]
   );
+
+  if (!chat) return null;
 
   return (
     <motion.div
@@ -108,15 +116,24 @@ export function ChatContainer({ onMessageCountChange }: ChatContainerProps) {
 
         <div className="space-y-6 mb-6 overflow-y-auto scrollbar-hide">
           <AnimatePresence>
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-                isLoading={
-                  isLoading && message === messages[messages.length - 1]
-                }
-              />
-            ))}
+            {messages
+              .slice()
+              .reverse()
+              .map((message) => (
+                <ChatMessage
+                  key={message._id}
+                  message={{
+                    id: message._id,
+                    content: message.content,
+                    sender: message.sender,
+                    timestamp: new Date(message.timestamp),
+                    difficulty: message.difficulty,
+                  }}
+                  isLoading={
+                    isLoading && message === messages[messages.length - 1]
+                  }
+                />
+              ))}
           </AnimatePresence>
           <div ref={messagesEndRef} className="h-px" />
         </div>
