@@ -1,95 +1,173 @@
 "use client";
 
-import { TypeAnimation } from "react-type-animation";
 import { Header } from "../components/header";
 import Figure from "../images/teacher-3d.png";
-import { useMediaQuery } from "usehooks-ts";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+import { useRef } from "react";
+import { FloatingElement } from "./components/floating-element";
+import { HeroSection } from "./components/hero-section";
+import { ParallaxWrapper } from "./components/parallax-wrapper";
+import { FeatureCard } from "./components/feature-card";
+import { GlowingButton } from "./components/glowing-button";
+
+const features = [
+  {
+    icon: "🎯",
+    title: "Personalized Learning",
+    description:
+      "AI-powered curriculum that adapts to your unique learning style and pace.",
+  },
+  {
+    icon: "⚡",
+    title: "Real-time Feedback",
+    description:
+      "Get instant, actionable feedback to improve your understanding.",
+  },
+  {
+    icon: "🧠",
+    title: "Smart Progress Tracking",
+    description:
+      "Visual insights into your learning journey with detailed analytics.",
+  },
+  {
+    icon: "🔄",
+    title: "Continuous Adaptation",
+    description:
+      "Learning experience that evolves with your growing knowledge.",
+  },
+];
+
+const floatingShapes = [
+  { shape: "circle", size: "80px", position: "top-20 left-[10%]", delay: 0 },
+  { shape: "square", size: "60px", position: "top-40 right-[15%]", delay: 1.2 },
+  {
+    shape: "triangle",
+    size: "70px",
+    position: "bottom-32 left-[20%]",
+    delay: 0.8,
+  },
+  {
+    shape: "circle",
+    size: "40px",
+    position: "bottom-20 right-[25%]",
+    delay: 2,
+  },
+];
 
 export default function Home() {
-  const matches = useMediaQuery("(max-width: 1024px)");
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <div className="bg-main h-screen w-full">
+    <div ref={containerRef} className="min-h-screen w-full overflow-hidden">
       <Header />
 
-      <div className="flex items-center lg:flex-row flex-col w-full h-[calc(100%-51px)] ">
-        <div className="flex flex-col items-center justify-center lg:w-[50%] w-full h-[100%]">
-          <h1 className="lg:text-6xl text-4xl font-bold text-center uppercase font-sans text-white">
-            Your Personalized AI Tutor,
-          </h1>
-          {/* <p className="text-6xl font-bold text-center uppercase font-sans text-[#55DC49]">
-            Ready 24/7
-          </p> */}
-          <TypeAnimation
-            sequence={[
-              "Guiding You Step by Step",
-              1000, // wait 1s before replacing "Mice" with "Hamsters"
-              "24/7",
-              1000,
-              "Tailored to Your Needs",
-              1000,
-            ]}
-            wrapper="span"
-            speed={50}
-            style={{
-              fontSize: matches ? "3.35rem" : "1.5rem",
-              display: "inline-block",
-              color: "#55DC49",
-              fontWeight: "bold",
-              fontFamily: "sans-serif",
-              textTransform: "uppercase",
-            }}
-            repeat={Infinity}
-          />
-        </div>
+      <main className="relative">
+        {/* Background Effects */}
+        <motion.div
+          style={{ opacity }}
+          className="fixed inset-0 bg-[#0F0F0F]"
+        />
+        <motion.div style={{ opacity }} className="fixed inset-0">
+          <motion.div style={{ y: backgroundY }} className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#55DC49]/5 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_85%)]" />
+          </motion.div>
+        </motion.div>
 
-        <div className="flex flex-col items-start justify-end w-[100%] md:w-[50%] h-full">
-          <div className="relative">
-            <Image
-              src={Figure}
-              alt="3D Teacher"
-              className="lg:w-[600px] lg:h-[700px] md:-ml-10 lg:ml-0 w-full object-contain"
+        {/* Floating Background Elements */}
+        {floatingShapes.map((shape, index) => (
+          <FloatingElement
+            key={index}
+            delay={shape.delay}
+            className={`fixed ${shape.position} w-[${shape.size}] h-[${shape.size}] opacity-30 blur-sm pointer-events-none z-0`}
+          >
+            <div
+              className={`w-full h-full bg-[#55DC49]/10 ${
+                shape.shape === "circle"
+                  ? "rounded-full"
+                  : shape.shape === "square"
+                    ? "rounded-xl rotate-45"
+                    : "clip-triangle"
+              }`}
             />
-            {/* make a cloudy above his head */}
+          </FloatingElement>
+        ))}
 
-            <div className="lg:w-[350px] lg:h-[200px] w-[250px] bg-white absolute top-[calc(100%-350px)] -right-[calc(100%-250px)] lg:top-[calc(100%-550px)] lg:-right-[calc(100%-300px)] rounded-md border-[#55DC49] border hidden md:block lg:hidden 2xl:block">
-              <div className="h-10 w-10  absolute left-[-20px] top-[50%] translate-y-[-50%] rotate-45 bg-white border-[#55DC49] border-l border-b" />
-              <div className="w-4 h-4 border border-black rounded-full top-1 left-[6px] absolute" />
-              <div className="h-[1px] w-full absolute left-0 top-[25px] translate-y-[-50%] bg-black " />
-              <div className="h-[1px] w-full absolute left-0 top-[55px] translate-y-[-50%] bg-black " />
-              <div className="h-[1px] w-full absolute left-0 top-[85px] translate-y-[-50%] bg-black " />
-              <div className="h-[1px] w-full absolute left-0 top-[115px] translate-y-[-50%] bg-black " />
-              <div className="h-[1px] w-full absolute left-0 top-[145px] translate-y-[-50%] bg-black " />
-              <div className="h-[1px] w-full absolute left-0 top-[175px] translate-y-[-50%] bg-black " />
-              <div className="w-[1px] h-full ml-7 bg-red-400 top-0 z-[999] absolute" />
-              <div className="w-4 h-4 border border-black rounded-full top-[50%] translate-y-[-50%] left-[6px] absolute" />
-              <div className="w-4 h-4 border border-black rounded-full bottom-[2px] left-[6px] absolute" />
-              <div>
-                {/* Example steps */}
-                <div className="flex items-start flex-col font-bold text-gray-700 font-sans ml-8">
-                  <div className="flex items-start flex-col  ml-2">
-                    <span className="text-xl">Step 1:</span>
-                    <span className="text-[#55DC49] text-3xl mt-[-2px]">
-                      ···
-                    </span>
-                  </div>
+        <div className="relative z-10">
+          <HeroSection />
 
-                  <div className="flex items-start flex-col  ml-2 mt-[-4px]">
-                    <span className="text-xl">Step 2:</span>
-                    <span className="text-[#55DC49] text-3xl">···</span>
-                  </div>
-
-                  <div className="flex items-start flex-col  ml-2 mt-[-3px]">
-                    <span className="text-xl">Step 3:</span>
-                    <span className="text-[#55DC49] text-3xl">···</span>
-                  </div>
-                </div>
-              </div>
+          <div className="container mx-auto px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+              {features.map((feature, index) => (
+                <ParallaxWrapper key={index} offset={30} className="h-full">
+                  <FeatureCard {...feature} delay={0.2 + index * 0.1} />
+                </ParallaxWrapper>
+              ))}
             </div>
+
+            <ParallaxWrapper offset={50}>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1 }}
+                className="relative rounded-2xl border border-[#55DC49]/10 bg-gradient-to-b from-[#1A1A1A] to-[#0F0F0F] p-8 lg:p-16 mb-24 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-[#55DC49]/5 via-transparent to-[#55DC49]/5" />
+
+                <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+                  <div className="flex-1">
+                    <motion.div
+                      initial={{ x: -50, opacity: 0 }}
+                      whileInView={{ x: 0, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+                        Start Your Learning Journey
+                      </h2>
+                      <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                        Join thousands of students who are already experiencing
+                        the future of education with our AI-powered learning
+                        platform.
+                      </p>
+                      <FloatingElement duration={3}>
+                        <GlowingButton>Begin Now →</GlowingButton>
+                      </FloatingElement>
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    className="flex-1 relative"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                  >
+                    <FloatingElement duration={6} className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#55DC49]/10 to-transparent rounded-full blur-3xl" />
+                      <Image
+                        src={Figure}
+                        alt="3D Teacher"
+                        className="w-full max-w-[500px] relative z-10"
+                      />
+                    </FloatingElement>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </ParallaxWrapper>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

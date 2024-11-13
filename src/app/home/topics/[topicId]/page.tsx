@@ -54,7 +54,7 @@ export default function TopicDetail({
     {
       title: "Introduction to the Basics",
       duration: "15 mins",
-      progress: 100,
+      progress: 0,
       status: "completed",
       students: 1234,
       rating: 4.8,
@@ -63,7 +63,7 @@ export default function TopicDetail({
     {
       title: "Core Concepts",
       duration: "25 mins",
-      progress: 60,
+      progress: 0,
       status: "in-progress",
       students: 982,
       rating: 4.9,

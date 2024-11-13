@@ -5,6 +5,7 @@ import { ModuleHeader } from "../components/module-header";
 import { ModuleReview } from "../components/module-review";
 import { ModuleContent } from "../components/module-content";
 import { ModuleSidebar } from "../components/module-sidebar";
+import { useEffect, useState } from "react";
 
 export default function ModuleDetail({
   params,
@@ -14,9 +15,8 @@ export default function ModuleDetail({
   const topicId = decodeURIComponent(params.topicId);
   const moduleId = decodeURIComponent(params.moduleId);
 
-  // Mock data - in a real app, fetch this from your API
-  const moduleStatus =
-    moduleId === "Introduction to the Basics" ? "completed" : "in-progress";
+  // Set all modules to in-progress to allow testing content
+  const moduleStatus = "in-progress";
 
   return (
     <motion.div
@@ -32,11 +32,7 @@ export default function ModuleDetail({
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {moduleStatus === "completed" ? (
-              <ModuleReview moduleId={moduleId} />
-            ) : (
-              <ModuleContent moduleId={moduleId} />
-            )}
+            <ModuleContent moduleId={moduleId} topicId={topicId} />
           </div>
           <div className="lg:col-span-1">
             <ModuleSidebar moduleId={moduleId} status={moduleStatus} />
