@@ -16,7 +16,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getModuleContent } from "@/lib/topics/data";
-import type { ModuleContent as ModuleContentType } from "@/lib/topics/data";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { useMutation } from "convex/react";
+
+import { toast } from "sonner";
+import { api } from "../../../../../../../convex/_generated/api";
 import { AiTutorPopup } from "./ai-tutor-popup";
 
 interface ModuleContentProps {
@@ -35,7 +39,6 @@ function AiTutorButton({ onClick }: { onClick: () => void }) {
         transition-colors duration-300"
     >
       <Brain className="w-4 h-4" />
-      <span className="text-sm font-medium">Ask AI Tutor</span>
     </motion.button>
   );
 }
@@ -46,6 +49,8 @@ export function ModuleContent({ moduleId, topicId }: ModuleContentProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [showAiTutor, setShowAiTutor] = useState(false);
+  const { data: user } = useCurrentUser();
+  const createChat = useMutation(api.messages.createChat);
 
   const moduleContent = getModuleContent(topicId, moduleId);
 
@@ -87,6 +92,28 @@ export function ModuleContent({ moduleId, topicId }: ModuleContentProps) {
   const handleAnswerSubmit = () => {
     if (selectedAnswer !== null) {
       setHasAnswered(true);
+    }
+  };
+
+  const handleAiTutorOpen = async () => {
+    if (!user) {
+      toast.error("You must be logged in to use the AI Tutor");
+      return;
+    }
+
+    try {
+      // Create a new chat for this AI Tutor session
+      const chatId = await createChat({
+        title: `${moduleContent.title} - Quiz Help`,
+        uuid: crypto.randomUUID(),
+        userId: user._id,
+      });
+
+      // Show the AI Tutor popup with the new chat context
+      setShowAiTutor(true);
+    } catch (error) {
+      console.error("Error creating chat:", error);
+      toast.error("Failed to start AI Tutor session");
     }
   };
 
@@ -139,7 +166,7 @@ export function ModuleContent({ moduleId, topicId }: ModuleContentProps) {
                   <HelpCircle className="w-5 h-5 text-[#55DC49]" />
                   Knowledge Check
                 </h4>
-                <AiTutorButton onClick={() => setShowAiTutor(true)} />
+                <AiTutorButton onClick={handleAiTutorOpen} />
               </div>
               <p className="text-gray-300 mb-4">
                 {currentSection.quiz.question}
@@ -278,13 +305,18 @@ export function ModuleContent({ moduleId, topicId }: ModuleContentProps) {
         </Card>
       </div>
 
-      <AiTutorPopup
-        isOpen={showAiTutor}
-        onClose={() => setShowAiTutor(false)}
-        question={currentSection.quiz?.question || ""}
+      {showAiTutor && (
         // @ts-ignore
-        explanation={currentSection.quiz?.explanation || ""}
-      />
+        <AiTutorPopup
+          isOpen={showAiTutor}
+          tags={[moduleId, topicId]}
+          onClose={() => setShowAiTutor(false)}
+          question={currentSection.quiz?.question || ""}
+          context={currentSection.content}
+          // chatId={currentSection?.chatId}
+          // messageId={currentSection?.messageId}
+        />
+      )}
     </div>
   );
 }

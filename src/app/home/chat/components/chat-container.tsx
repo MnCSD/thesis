@@ -2,12 +2,15 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChatMessage } from "./chat-message";
 import { ChatInput } from "./chat-input";
+import { CreateNoteDialog } from "./create-note-dialog";
 import { generateTutorResponse } from "@/app/utils/tutor-utils";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 interface ChatContainerProps {
-  chatId: string; // This is now the UUID
+  chatId: string;
   onMessageCountChange: (count: number) => void;
 }
 
@@ -16,8 +19,13 @@ export function ChatContainer({
   onMessageCountChange,
 }: ChatContainerProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedMessageId, setSelectedMessageId] =
+    useState<Id<"messages"> | null>(null);
+  const [selectedContent, setSelectedContent] = useState("");
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollTimeout = useRef<NodeJS.Timeout>();
+  const { data: user } = useCurrentUser();
 
   const chat = useQuery(api.messages.getChatByUuid, { uuid: chatId });
   const sendMessage = useMutation(api.messages.send);
@@ -93,6 +101,15 @@ export function ChatContainer({
     [chat, sendMessage, messages, isLoading, scrollToBottom]
   );
 
+  const handleMessageSelection = (
+    messageId: Id<"messages">,
+    selectedText: string
+  ) => {
+    setSelectedMessageId(messageId);
+    setSelectedContent(selectedText);
+    setIsNoteDialogOpen(true);
+  };
+
   if (!chat) return null;
 
   return (
@@ -100,7 +117,7 @@ export function ChatContainer({
       initial={{ y: 20, opacity: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative z-10 min-h-full flex flex-col max-w-4xl mx-auto px-6"
+      className="relative z-10 min-h-full flex flex-col max-w-5xl mx-auto px-6"
     >
       <div className="flex-1 py-8">
         {messages.length === 0 && (
@@ -132,6 +149,8 @@ export function ChatContainer({
                   isLoading={
                     isLoading && message === messages[messages.length - 1]
                   }
+                  onSelect={handleMessageSelection}
+                  isSelected={message._id === selectedMessageId}
                 />
               ))}
           </AnimatePresence>
@@ -140,6 +159,21 @@ export function ChatContainer({
       </div>
 
       <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+
+      {user && chat && (
+        <CreateNoteDialog
+          isOpen={isNoteDialogOpen}
+          onClose={() => {
+            setIsNoteDialogOpen(false);
+            setSelectedMessageId(null);
+            setSelectedContent("");
+          }}
+          selectedContent={selectedContent}
+          chatId={chat._id}
+          messageId={selectedMessageId!}
+          userId={user._id}
+        />
+      )}
     </motion.div>
   );
 }

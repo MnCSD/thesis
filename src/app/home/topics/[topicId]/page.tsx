@@ -55,7 +55,7 @@ export default function TopicDetail({
       title: "Introduction to the Basics",
       duration: "15 mins",
       progress: 0,
-      status: "completed",
+      status: "in-progress",
       students: 1234,
       rating: 4.8,
       description: "Learn the fundamental concepts and core principles.",
@@ -74,7 +74,7 @@ export default function TopicDetail({
       title: "Advanced Techniques",
       duration: "30 mins",
       progress: 0,
-      status: "locked",
+      status: "in-progress",
       students: 756,
       rating: 4.7,
       description: "Master complex problem-solving and advanced methodologies.",
@@ -83,7 +83,7 @@ export default function TopicDetail({
       title: "Practical Applications",
       duration: "45 mins",
       progress: 0,
-      status: "locked",
+      status: "in-progress",
       students: 543,
       rating: 4.6,
       description:
@@ -184,14 +184,14 @@ export default function TopicDetail({
                     <BookOpen className="w-4 h-4 mr-2" />
                     <span>4 modules</span>
                   </div>
-                  <div className="flex items-center text-gray-400">
-                    <Users className="w-4 h-4 mr-2" />
-                    <span>2.5k enrolled</span>
-                  </div>
-                  <div className="flex items-center text-gray-400">
+                  {/* <div className="flex items-center text-gray-400">
+                    {/* <Users className="w-4 h-4 mr-2" />
+                    <span>2.5k enrolled</span> 
+                  </div> */}
+                  {/* <div className="flex items-center text-gray-400">
                     <Trophy className="w-4 h-4 mr-2" />
                     <span>Certificate</span>
-                  </div>
+                  </div> */}
                 </motion.div>
 
                 <motion.div className="space-y-6" variants={stagger}>

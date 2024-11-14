@@ -19,6 +19,10 @@ import { NoteCard } from "./components/note-card";
 import { EmptyState } from "./components/empty-state";
 import { SearchBar } from "./components/search-bar";
 
+import { GenericId } from "convex/values";
+import { useNotes } from "@/features/notes/use-notes";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+
 const sortOptions = {
   newest: "Newest First",
   oldest: "Oldest First",
@@ -31,48 +35,67 @@ export default function StudyNotes() {
   const [sortBy, setSortBy] = useState("newest");
   const [selectedNotes, setSelectedNotes] = useState(new Set());
   const { data: user } = useCurrentUser();
+  const { useGetNotesByUser } = useNotes();
 
-  const chats =
-    useQuery(api.messages.listChats, user ? { userId: user._id } : "skip") ||
-    [];
+  // @ts-ignore
+  const { notes, isLoading } = useGetNotesByUser(user ? user._id : "skip");
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const filteredAndSortedChats = chats
-    .filter((chat) =>
-      chat.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "oldest":
-          // @ts-ignore
-          return new Date(a.timestamp) - new Date(b.timestamp);
-        case "alphabetical":
-          return a.title.localeCompare(b.title);
-        default:
-          // @ts-ignore
-          return new Date(b.timestamp) - new Date(a.timestamp);
-      }
-    });
+  const filteredAndSortedNotes = notes
+    ? notes
+        .filter((note: { title: string }) =>
+          note.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .sort(
+          (
+            a: { timestamp: number; title: string },
+            b: { timestamp: number; title: any }
+          ) => {
+            switch (sortBy) {
+              case "oldest":
+                return a.timestamp - b.timestamp;
+              case "alphabetical":
+                return a.title.localeCompare(b.title);
+              default:
+                return b.timestamp - a.timestamp;
+            }
+          }
+        )
+    : [];
 
-  const handleDelete = () => {
-    toast.success(`${selectedNotes.size} notes deleted`);
-    setSelectedNotes(new Set());
-  };
+  // const handleDelete = async () => {
+  //   try {
+  //     // Assuming you have a deleteNote mutation in your API
+  //     for (const noteId of selectedNotes) {
+  //       await api.notes.deleteNote({ noteId });
+  //     }
+  //     toast.success(`${selectedNotes.size} notes deleted`);
+  //     setSelectedNotes(new Set());
+  //   } catch (error) {
+  //     toast.error("Failed to delete notes");
+  //   }
+  // };
 
-  const toggleNoteSelection = (chatId: string) => {
+  const toggleNoteSelection = (noteId: string) => {
     const newSelected = new Set(selectedNotes);
-    if (newSelected.has(chatId)) {
-      newSelected.delete(chatId);
+    if (newSelected.has(noteId)) {
+      newSelected.delete(noteId);
     } else {
-      newSelected.add(chatId);
+      newSelected.add(noteId);
     }
     setSelectedNotes(newSelected);
   };
 
   if (!mounted) return null;
+  if (isLoading)
+    return (
+      <div className="bg-main w-full h-[100vh] overflow-hidden flex items-center justify-center pl-[0!important]">
+        <ClimbingBoxLoader color="#55DC49" className="rotate-45" />
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-[#0F0F0F] p-8">
@@ -117,8 +140,7 @@ export default function StudyNotes() {
                   className="bg-white/5 border-white/10 text-white"
                 >
                   <SortDesc className="w-4 h-4 mr-2" />
-                  {/* @ts-ignore */}
-                  {sortOptions[sortBy]}
+                  {sortOptions[sortBy as keyof typeof sortOptions]}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -135,7 +157,7 @@ export default function StudyNotes() {
                 animate={{ scale: 1 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleDelete}
+                // onClick={handleDelete}
                 className="px-4 py-2 bg-red-500/10 text-red-500 rounded-lg
                   hover:bg-red-500/20 transition-colors duration-300
                   flex items-center gap-2"
@@ -148,19 +170,35 @@ export default function StudyNotes() {
         </motion.div>
 
         <AnimatePresence>
-          {filteredAndSortedChats.length === 0 ? (
+          {filteredAndSortedNotes.length === 0 ? (
             <EmptyState searchQuery={searchQuery} />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredAndSortedChats.map((chat, index) => (
-                <NoteCard
-                  key={chat._id}
-                  chat={chat}
-                  index={index}
-                  isSelected={selectedNotes.has(chat._id)}
-                  onSelect={toggleNoteSelection}
-                />
-              ))}
+              {filteredAndSortedNotes.map(
+                // @ts-ignore
+                (
+                  note: {
+                    _id: GenericId<"notes">;
+                    _creationTime: number;
+                    tags?: string[] | undefined;
+                    userId: GenericId<"users">;
+                    title: string;
+                    timestamp: number;
+                    chatId: GenericId<"chats">;
+                    content: string;
+                    messageId: GenericId<"messages">;
+                  },
+                  index: number
+                ) => (
+                  <NoteCard
+                    key={note._id}
+                    note={note}
+                    index={index}
+                    isSelected={selectedNotes.has(note._id)}
+                    onSelect={toggleNoteSelection}
+                  />
+                )
+              )}
             </div>
           )}
         </AnimatePresence>

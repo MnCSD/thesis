@@ -46,7 +46,7 @@ export function ModuleHeader({
           {status === "in-progress" && (
             <Button
               variant="outline"
-              className="border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10"
+              className="border-[#55DC49]/30 text-black font-bold bg-[#55DC49]/70 hover:border-[#55DC49] hover:bg-[#55DC49]/10 hover:text-white"
             >
               Mark as Complete
             </Button>

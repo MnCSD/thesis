@@ -39,6 +39,18 @@ const schema = defineSchema({
     timestamp: v.number(),
     difficulty: v.optional(v.string()),
   }).index("by_chat", ["chatId"]),
+  notes: defineTable({
+    userId: v.id("users"),
+    chatId: v.optional(v.id("chats")),
+    messageId: v.optional(v.id("messages")),
+    content: v.string(),
+    timestamp: v.number(),
+    tags: v.optional(v.array(v.string())),
+    title: v.string(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_chat", ["chatId"])
+    .index("by_message", ["messageId"]),
 });
 
 export default schema;

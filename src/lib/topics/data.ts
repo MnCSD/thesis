@@ -13,6 +13,7 @@ import {
   Dna,
 } from "lucide-react";
 import { computerScienceModules } from "./modules/computer-science";
+import { mathematicsModules } from "./modules/mathematics";
 
 export interface TopicContent {
   id: string;
@@ -55,11 +56,17 @@ export const topicContents: Record<string, TopicContent> = {
     title: "Computer Science",
     sections: computerScienceModules[0].slides,
   },
+  Mathematics: {
+    id: "mathematics",
+    title: "Mathematics",
+    sections: mathematicsModules[0].slides,
+  },
 };
 
 // Module contents for new module-based system
 export const moduleContents: Record<string, ModuleContent[]> = {
   "Computer Science": computerScienceModules,
+  Mathematics: mathematicsModules,
 };
 
 export const getTopicContent = (topicId: string): TopicContent | undefined => {

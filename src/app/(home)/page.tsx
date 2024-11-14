@@ -5,12 +5,14 @@ import Figure from "../images/teacher-3d.png";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FloatingElement } from "./components/floating-element";
 import { HeroSection } from "./components/hero-section";
 import { ParallaxWrapper } from "./components/parallax-wrapper";
 import { FeatureCard } from "./components/feature-card";
 import { GlowingButton } from "./components/glowing-button";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { redirect } from "next/navigation";
 
 const features = [
   {
@@ -58,6 +60,7 @@ const floatingShapes = [
 
 export default function Home() {
   const containerRef = useRef(null);
+  const { data: user } = useCurrentUser();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -65,6 +68,12 @@ export default function Home() {
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  useEffect(() => {
+    if (user) {
+      redirect("/explore");
+    }
+  }, []);
 
   return (
     <div ref={containerRef} className="min-h-screen w-full overflow-hidden">

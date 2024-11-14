@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { Doc } from "../../../../../convex/_generated/dataModel";
 
 const colors = [
   "bg-yellow-100",
@@ -14,13 +15,13 @@ const colors = [
 ];
 
 interface NoteCardProps {
-  chat: any;
+  note: Doc<"notes">;
   index: number;
   isSelected: boolean;
   onSelect: (id: string) => void;
 }
 
-export function NoteCard({ chat, index, isSelected, onSelect }: NoteCardProps) {
+export function NoteCard({ note, index, isSelected, onSelect }: NoteCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, rotate: -2 }}
@@ -41,7 +42,7 @@ export function NoteCard({ chat, index, isSelected, onSelect }: NoteCardProps) {
         className="absolute -right-2 -top-2 z-10"
         onClick={(e) => {
           e.preventDefault();
-          onSelect(chat._id);
+          onSelect(note._id);
         }}
       >
         <motion.div
@@ -61,7 +62,7 @@ export function NoteCard({ chat, index, isSelected, onSelect }: NoteCardProps) {
         />
       </div>
 
-      <Link href={`/home/chat/${chat.uuid}`}>
+      <Link href={`/home/study-notes/${note._id}`}>
         <div
           className={`
             ${colors[index % colors.length]} p-6 rounded-lg
@@ -93,16 +94,26 @@ export function NoteCard({ chat, index, isSelected, onSelect }: NoteCardProps) {
               className="text-gray-800 font-semibold text-lg mb-2 
               line-clamp-2 leading-tight"
             >
-              {chat.title}
+              {note.title}
             </h3>
-            <p className="text-gray-600 text-sm line-clamp-3">
-              {chat.lastMessage || "Start your learning journey..."}
-            </p>
+            <p className="text-gray-600 text-sm line-clamp-3">{note.content}</p>
+            {note.tags && note.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {note.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2 py-1 text-xs rounded-full bg-black/10 text-gray-700"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2 text-gray-500 text-xs mt-4">
             <Clock className="w-3 h-3" />
-            <span>{format(new Date(chat.timestamp), "MMM d, h:mm a")}</span>
+            <span>{format(new Date(note.timestamp), "MMM d, h:mm a")}</span>
           </div>
 
           {/* Pin Effect */}

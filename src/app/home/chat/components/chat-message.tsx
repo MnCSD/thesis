@@ -1,12 +1,18 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useState } from "react";
-import { ChalkPen } from "./chalk-pen";
-import { Copy, Check, Code2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { BookmarkPlus, Plus, Check } from "lucide-react";
 import Figure from "../../../images/teacher-3d.png";
 import { formatContent } from "@/app/utils/format-content";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { SelectionOverlay } from "./selection-overlay";
+import { CodeBlock } from "./code-block";
+
+interface SelectedBlock {
+  content: string;
+  type: string;
+}
 
 interface Message {
   id: Id<"messages">;
@@ -19,9 +25,11 @@ interface Message {
 interface ChatMessageProps {
   message: Message;
   isLoading?: boolean;
+  onSelect?: (messageId: Id<"messages">, selectedText: string) => void;
+  isSelected?: boolean;
 }
 
-const textVariants = {
+export const textVariants = {
   hidden: { opacity: 0 },
   visible: (i: number) => ({
     opacity: 1,
@@ -31,128 +39,19 @@ const textVariants = {
   }),
 };
 
-function CodeBlock({
-  content,
-  language,
-}: {
-  content: string;
-  language: string;
-}) {
-  const [copied, setCopied] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="relative my-4 rounded-lg overflow-hidden transform transition-all duration-300"
-      style={{
-        background:
-          "linear-gradient(145deg, rgba(42,42,42,0.9) 0%, rgba(28,28,28,0.95) 100%)",
-        boxShadow: isHovered
-          ? "0 8px 30px rgba(85,220,73,0.2), 0 0 0 1px rgba(85,220,73,0.1), inset 0 0 80px rgba(85,220,73,0.03)"
-          : "0 4px 20px rgba(0,0,0,0.2), inset 0 0 60px rgba(0,0,0,0.2)",
-        transform: isHovered
-          ? "scale(1.02) translateY(-2px)"
-          : "scale(1) translateY(0)",
-      }}
-    >
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        animate={{
-          background: [
-            "linear-gradient(0deg, rgba(85,220,73,0.1) 0%, transparent 100%)",
-            "linear-gradient(90deg, rgba(85,220,73,0.1) 0%, transparent 100%)",
-            "linear-gradient(180deg, rgba(85,220,73,0.1) 0%, transparent 100%)",
-            "linear-gradient(270deg, rgba(85,220,73,0.1) 0%, transparent 100%)",
-          ],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-      />
-
-      <motion.div
-        className="flex justify-between items-center px-4 py-2"
-        style={{
-          background: isHovered
-            ? "linear-gradient(90deg, rgba(85,220,73,0.1) 0%, rgba(42,42,42,0.9) 100%)"
-            : "linear-gradient(90deg, rgba(42,42,42,0.9) 0%, rgba(28,28,28,0.95) 100%)",
-          borderBottom: "1px solid rgba(85,220,73,0.1)",
-        }}
-      >
-        <span className="text-sm text-[#55DC49] flex items-center gap-2 font-mono">
-          <Code2 className="h-4 w-4" />
-          <span className="opacity-80">{language}</span>
-        </span>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleCopy}
-          className="p-1.5 rounded-md transition-all duration-300 relative group"
-          style={{
-            background: copied ? "rgba(85,220,73,0.1)" : "transparent",
-            border: "1px solid rgba(85,220,73,0.1)",
-          }}
-        >
-          {copied ? (
-            <Check className="h-4 w-4 text-[#55DC49]" />
-          ) : (
-            <Copy className="h-4 w-4 text-gray-400 group-hover:text-[#55DC49] transition-colors duration-300" />
-          )}
-          <motion.span
-            initial={false}
-            animate={{
-              opacity: copied ? 1 : 0,
-              y: copied ? -20 : 0,
-            }}
-            className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs text-[#55DC49] whitespace-nowrap bg-[rgba(85,220,73,0.1)] px-2 py-1 rounded"
-          >
-            Copied!
-          </motion.span>
-        </motion.button>
-      </motion.div>
-
-      <div className="relative">
-        <pre className="p-4 overflow-x-auto">
-          <code className="text-sm text-gray-300 whitespace-pre font-mono leading-relaxed">
-            {content.split("\n").map((line, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="hover:bg-[rgba(85,220,73,0.03)] px-2 -mx-2 rounded"
-              >
-                {line}
-              </motion.div>
-            ))}
-          </code>
-        </pre>
-
-        <div className="absolute top-2 right-2 w-2 h-2 border-t-2 border-r-2 border-[rgba(85,220,73,0.1)]" />
-        <div className="absolute top-2 left-2 w-2 h-2 border-t-2 border-l-2 border-[rgba(85,220,73,0.1)]" />
-        <div className="absolute bottom-2 right-2 w-2 h-2 border-b-2 border-r-2 border-[rgba(85,220,73,0.1)]" />
-        <div className="absolute bottom-2 left-2 w-2 h-2 border-b-2 border-l-2 border-[rgba(85,220,73,0.1)]" />
-      </div>
-    </motion.div>
-  );
-}
-
-export function ChatMessage({ message, isLoading }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  isLoading,
+  onSelect,
+  isSelected,
+}: ChatMessageProps) {
   const isAI = message.sender === "ai";
   const [isWriting, setIsWriting] = useState(true);
+  const [selectedBlocks, setSelectedBlocks] = useState<SelectedBlock[]>([]);
+  const [isHoveringNote, setIsHoveringNote] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const messageRef = useRef<HTMLDivElement>(null);
+
   const formattedContent = isAI
     ? formatContent(message.content)
     : [{ type: "paragraph", content: message.content, key: "user" }];
@@ -160,45 +59,172 @@ export function ChatMessage({ message, isLoading }: ChatMessageProps) {
   const totalWords = message.content.split(" ").length;
   const totalAnimationTime = totalWords * 0.03 + 0.5;
 
-  if (isAI && !isLoading) {
-    setTimeout(() => setIsWriting(false), totalAnimationTime * 1000);
-  }
+  useEffect(() => {
+    if (isAI && !isLoading) {
+      const timer = setTimeout(
+        () => setIsWriting(false),
+        totalAnimationTime * 1000
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [isAI, isLoading, totalAnimationTime]);
+
+  const handleNoteClick = () => {
+    if (selectionMode && selectedBlocks.length > 0) {
+      const combinedContent = selectedBlocks
+        .map((block) => block.content)
+        .join("\n\n");
+      onSelect?.(message.id, combinedContent);
+      setSelectionMode(false);
+      setSelectedBlocks([]);
+    } else {
+      setSelectionMode(true);
+      setSelectedBlocks([]);
+    }
+  };
+
+  const handleBlockSelect = (content: string, type: string) => {
+    if (!selectionMode) return;
+
+    const blockIndex = selectedBlocks.findIndex((b) => b.content === content);
+    if (blockIndex > -1) {
+      setSelectedBlocks((blocks) => blocks.filter((_, i) => i !== blockIndex));
+    } else {
+      setSelectedBlocks((blocks) => [...blocks, { content, type }]);
+    }
+  };
+
+  const isBlockSelected = (content: string) => {
+    return selectedBlocks.some((block) => block.content === content);
+  };
+
+  const renderBlock = (block: any) => {
+    if (block.type === "code") {
+      return (
+        <div
+          onClick={() => handleBlockSelect(block.content, "code")}
+          className={`relative group cursor-pointer ${
+            selectionMode
+              ? "hover:ring-2 hover:ring-[#55DC49]/50 rounded-lg"
+              : ""
+          } ${isBlockSelected(block.content) ? "ring-2 ring-[#55DC49] bg-[#55DC49]/10" : ""}`}
+        >
+          <CodeBlock
+            key={block.key}
+            content={block.content}
+            language={block.language}
+          />
+          {selectionMode && (
+            <div
+              className={`absolute right-2 top-2 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                isBlockSelected(block.content)
+                  ? "bg-[#55DC49] text-black"
+                  : "bg-[#2A2A2A] border-2 border-[#55DC49]/50"
+              }`}
+            >
+              {isBlockSelected(block.content) && <Check className="w-4 h-4" />}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (block.type === "numbered-list") {
+      return (
+        <div key={block.key} className="space-y-2">
+          {block.items.map((item: any, i: number) => (
+            <motion.div
+              key={i}
+              onClick={() => handleBlockSelect(item.content, "list-item")}
+              className={`flex gap-2 p-2 rounded-lg cursor-pointer ${
+                selectionMode ? "hover:bg-[#55DC49]/10" : ""
+              } ${isBlockSelected(item.content) ? "bg-[#55DC49]/10 ring-2 ring-[#55DC49]" : ""}`}
+            >
+              <span className="text-[#E8E8E8] opacity-90 chalk-dust">
+                {item.number}.
+              </span>
+              <span className="text-[#E8E8E8] opacity-90 chalk-dust flex-1">
+                {item.content}
+              </span>
+              {selectionMode && (
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                    isBlockSelected(item.content)
+                      ? "bg-[#55DC49] text-black"
+                      : "bg-[#2A2A2A] border-2 border-[#55DC49]/50"
+                  }`}
+                >
+                  {isBlockSelected(item.content) && (
+                    <Check className="w-4 h-4" />
+                  )}
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <motion.div
+        key={block.key}
+        onClick={() => handleBlockSelect(block.content, "paragraph")}
+        className={`relative text-[#E8E8E8] opacity-90 chalk-dust leading-relaxed p-2 rounded-lg ${
+          selectionMode ? "cursor-pointer hover:bg-[#55DC49]/10" : ""
+        } ${isBlockSelected(block.content) ? "bg-[#55DC49]/10 ring-2 ring-[#55DC49]" : ""}`}
+      >
+        <div className="flex gap-2">
+          <p className="flex-1">{block.content}</p>
+          {selectionMode && (
+            <div
+              className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-200 ${
+                isBlockSelected(block.content)
+                  ? "bg-[#55DC49] text-black"
+                  : "bg-[#2A2A2A] border-2 border-[#55DC49]/50"
+              }`}
+            >
+              {isBlockSelected(block.content) && <Check className="w-4 h-4" />}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
     <motion.div
+      ref={messageRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className={`flex ${isAI ? "justify-start" : "justify-end"} ${
         isAI ? "pl-0 pr-20" : "pl-20 pr-0"
-      }`}
+      } relative group`}
     >
       {isAI && (
-        <div className="relative">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5, x: -50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 20,
-              delay: 0.1,
-            }}
-            className="relative w-[120px] h-[140px] mr-4 flex-shrink-0"
-          >
-            <Image
-              src={Figure}
-              alt="3D Teacher"
-              className="object-contain"
-              fill
-              sizes="120px"
-            />
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5, x: 0 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+            delay: 0.1,
+          }}
+          className="relative w-[120px] h-[140px] mr-4 flex-shrink-0"
+        >
+          <Image
+            src={Figure}
+            alt="AI Teacher"
+            fill
+            className="object-contain"
+            priority
+          />
+        </motion.div>
       )}
 
       <motion.div
-        initial={{ scale: 0, rotate: -2 }}
+        initial={{ scale: 0.95, rotate: -2 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{
           type: "spring",
@@ -206,10 +232,12 @@ export function ChatMessage({ message, isLoading }: ChatMessageProps) {
           damping: 30,
           delay: isAI ? 0.2 : 0,
         }}
-        className={`max-w-[70%] rounded-lg px-6 py-4 relative ${
+        className={`max-w-[70%] rounded-xl px-6 py-4 relative ${
           isAI
-            ? "bg-[#2A2A2A] shadow-[0_0_15px_rgba(0,0,0,0.2),inset_0_0_80px_rgba(0,0,0,0.3)] border-2 border-[#404040]"
+            ? "bg-[#2A2A2A] shadow-[0_0_15px_rgba(0,0,0,0.2),inset_0_0_80px_rgba(0,0,0,0.3)] border-2 border-[#404040] group-hover:border-[#55DC49]/30 transition-all duration-300"
             : "bg-transparent"
+        } ${isSelected ? "ring-2 ring-[#55DC49] ring-opacity-50" : ""} ${
+          selectionMode ? "ring-2 ring-[#55DC49]/30" : ""
         }`}
         style={
           isAI
@@ -222,7 +250,64 @@ export function ChatMessage({ message, isLoading }: ChatMessageProps) {
             : {}
         }
       >
-        {isAI && (isWriting || isLoading) && <ChalkPen isVisible={true} />}
+        {isAI && !isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute -right-12 top-1/2 transform -translate-y-1/2 flex flex-col items-center gap-2"
+          >
+            <div className="relative">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onHoverStart={() => setIsHoveringNote(true)}
+                onHoverEnd={() => setIsHoveringNote(false)}
+                onClick={handleNoteClick}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                  selectionMode
+                    ? selectedBlocks.length > 0
+                      ? "bg-[#55DC49] text-black"
+                      : "bg-[#55DC49]/20 text-[#55DC49]"
+                    : "bg-[#55DC49]/10 border-2 border-[#55DC49]/20 text-[#55DC49] hover:bg-[#55DC49]/20 hover:border-[#55DC49]/30"
+                }`}
+              >
+                {selectionMode && selectedBlocks.length > 0 ? (
+                  <Check className="w-5 h-5" />
+                ) : (
+                  <BookmarkPlus className="w-5 h-5 transform transition-all duration-300 group-hover:scale-110" />
+                )}
+              </motion.button>
+              <motion.div
+                initial={false}
+                animate={{
+                  opacity: isHoveringNote ? 1 : 0,
+                  scale: isHoveringNote ? 1 : 0.8,
+                  x: isHoveringNote ? 0 : 10,
+                }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeOut",
+                }}
+                className="absolute left-full ml-3 top-1 -translate-y-1/2 px-3 py-2 bg-[#55DC49] text-black text-sm font-medium rounded-lg whitespace-nowrap shadow-lg pointer-events-none"
+              >
+                {selectionMode
+                  ? selectedBlocks.length > 0
+                    ? "Create note"
+                    : "Select content"
+                  : "Start selecting"}
+                <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-[#55DC49] rotate-45" />
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+
+        {selectionMode && selectedBlocks.length > 0 && (
+          <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#55DC49] text-black rounded-full px-3 py-1 text-sm font-medium">
+            {selectedBlocks.length} block{selectedBlocks.length > 1 ? "s" : ""}{" "}
+            selected
+          </div>
+        )}
+
         <div
           className={`text-lg ${
             isAI
@@ -237,63 +322,7 @@ export function ChatMessage({ message, isLoading }: ChatMessageProps) {
                   Thinking...
                 </motion.span>
               ) : (
-                formattedContent.map((block: any) => {
-                  if (block.type === "code") {
-                    return (
-                      <CodeBlock
-                        key={block.key}
-                        content={block.content}
-                        language={block.language}
-                      />
-                    );
-                  }
-
-                  if (block.type === "numbered-list") {
-                    return (
-                      <div key={block.key} className="space-y-2">
-                        {block.items.map((item: any, i: number) => (
-                          <motion.div
-                            key={i}
-                            custom={i}
-                            initial="hidden"
-                            animate="visible"
-                            variants={textVariants}
-                            className="flex gap-2"
-                          >
-                            <span className="text-[#E8E8E8] opacity-90 chalk-dust">
-                              {item.number}
-                            </span>
-                            <span className="text-[#E8E8E8] opacity-90 chalk-dust">
-                              {item.content}
-                            </span>
-                          </motion.div>
-                        ))}
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <motion.p
-                      key={block.key}
-                      className="text-[#E8E8E8] opacity-90 chalk-dust leading-relaxed"
-                    >
-                      {block.content
-                        .split(" ")
-                        .map((word: string, i: number) => (
-                          <motion.span
-                            key={i}
-                            custom={i}
-                            initial="hidden"
-                            animate="visible"
-                            variants={textVariants}
-                            className="inline-block mr-2"
-                          >
-                            {word}
-                          </motion.span>
-                        ))}
-                    </motion.p>
-                  );
-                })
+                formattedContent.map((block: any) => renderBlock(block))
               )}
             </motion.div>
           ) : (

@@ -24,7 +24,7 @@ const actions = [
     icon: BookMarked,
     title: "Study Notes",
     description: "Access your saved materials",
-    href: "/notes",
+    href: "/home/study-notes",
     color: "text-blue-400",
     bgColor: "bg-blue-400/10",
   },

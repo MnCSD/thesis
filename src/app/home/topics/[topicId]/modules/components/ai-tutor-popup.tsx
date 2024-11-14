@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { X, Sparkles, Loader2, BookmarkPlus } from "lucide-react";
+import { X, Sparkles, BookmarkPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getQuestionExplanation } from "@/app/utils/ai-tutor";
+import { formatContent } from "@/app/utils/format-content";
+import { toast } from "sonner";
+import {
+  CodeBlock,
+  textVariants,
+} from "@/app/home/chat/components/chat-message";
+
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { Id } from "../../../../../../../convex/_generated/dataModel";
+import { useCreateNote } from "@/features/notes/use-create-note";
 
 interface AiTutorPopupProps {
   isOpen: boolean;
   onClose: () => void;
   question: string;
   context: string;
+  chatId: Id<"chats">;
+  messageId: Id<"messages">;
+  tags: string[];
 }
 
 export function AiTutorPopup({
@@ -15,9 +28,15 @@ export function AiTutorPopup({
   onClose,
   question,
   context,
+  chatId,
+  messageId,
+  tags,
 }: AiTutorPopupProps) {
   const [explanation, setExplanation] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const formattedContent = formatContent(explanation);
+  const { data: user } = useCurrentUser();
+  const { mutate: createNote, isPending: isSaving } = useCreateNote();
 
   useEffect(() => {
     if (isOpen && question) {
@@ -33,6 +52,38 @@ export function AiTutorPopup({
         });
     }
   }, [isOpen, question, context]);
+
+  const handleSaveNote = async () => {
+    console.log("Saving note...");
+    if (!user) {
+      toast.error("You must be logged in to save notes");
+      return;
+    }
+
+    try {
+      await createNote(
+        {
+          userId: user._id,
+          chatId,
+          messageId,
+          content: explanation,
+          title: question,
+          tags,
+        },
+        {
+          onSuccess: () => {
+            console.log("Saved!");
+            toast.success("Note saved successfully!");
+          },
+          onError: () => {
+            toast.error("Failed to save note");
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error saving note:", error);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -50,7 +101,7 @@ export function AiTutorPopup({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 20 }}
-            className="fixed inset-4 z-50 overflow-hidden md:left-1/2 md:top-[45%] md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:inset-auto"
+            className="fixed inset-4 z-50 overflow-hidden md:right-10 md:top-[45%] md:-translate-x-1/2 md:w-full md:max-w-3xl md:inset-auto"
           >
             <div className="relative h-full md:h-[450px]">
               <div className="h-full overflow-auto rounded-xl bg-[#1A1A1A] shadow-2xl shadow-[#55DC49]/10 md:max-h-[85vh]">
@@ -87,30 +138,85 @@ export function AiTutorPopup({
                     <h4 className="text-sm font-medium text-gray-400 mb-2">
                       Explanation:
                     </h4>
-                    {isLoading ? (
-                      <div className="flex items-center justify-center py-8">
-                        <Loader2 className="w-6 h-6 text-[#55DC49] animate-spin" />
-                      </div>
-                    ) : (
-                      <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 whitespace-pre-line">
-                          {explanation}
-                        </p>
-                      </div>
-                    )}
+                    <motion.div className="space-y-4">
+                      {isLoading ? (
+                        <motion.span className="inline-block text-[#E8E8E8] opacity-90 chalk-dust">
+                          Thinking...
+                        </motion.span>
+                      ) : (
+                        formattedContent.map((block: any) => {
+                          if (block.type === "code") {
+                            return (
+                              <CodeBlock
+                                key={block.key}
+                                content={block.content}
+                                language={block.language}
+                              />
+                            );
+                          }
+
+                          if (block.type === "numbered-list") {
+                            return (
+                              <div key={block.key} className="space-y-2">
+                                {block.items.map((item: any, i: number) => (
+                                  <motion.div
+                                    key={i}
+                                    custom={i}
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={textVariants}
+                                    className="flex gap-2"
+                                  >
+                                    <span className="text-[#E8E8E8] opacity-90 chalk-dust">
+                                      {item.number}
+                                    </span>
+                                    <span className="text-[#E8E8E8] opacity-90 chalk-dust">
+                                      {item.content}
+                                    </span>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <motion.p
+                              key={block.key}
+                              className="text-[#E8E8E8] opacity-90 chalk-dust leading-relaxed"
+                            >
+                              {block.content
+                                .split(" ")
+                                .map((word: string, i: number) => (
+                                  <motion.span
+                                    key={i}
+                                    custom={i}
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={textVariants}
+                                    className="inline-block mr-2"
+                                  >
+                                    {word}
+                                  </motion.span>
+                                ))}
+                            </motion.p>
+                          );
+                        })
+                      )}
+                    </motion.div>
                   </div>
                 </div>
 
                 {/* Footer */}
                 <div className="sticky bottom-0 bg-[#1A1A1A] border-t border-[#55DC49]/10 p-4 flex justify-between items-center">
                   <button
+                    onClick={handleSaveNote}
+                    disabled={isLoading || isSaving}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium 
                     bg-[#232323] hover:bg-[#2a2a2a] text-white border border-[#55DC49]/20 
                     transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isLoading}
                   >
                     <BookmarkPlus className="w-4 h-4" />
-                    Save to Notes
+                    {isSaving ? "Saving..." : "Save to Notes"}
                   </button>
                   <button
                     onClick={onClose}

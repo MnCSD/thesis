@@ -11,6 +11,7 @@ import {
   Plus,
   MessageCircle,
   Clock,
+  BookMarked,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,6 +25,7 @@ const navigation = [
   { name: "Dashboard", href: "/home", icon: LayoutDashboard },
   { name: "Topics", href: "/home/topics", icon: BookOpen },
   { name: "Progress", href: "/home/progress", icon: Trophy },
+  { name: "Notes", href: "/home/study-notes", icon: BookMarked },
 ];
 
 interface SidebarProps {
