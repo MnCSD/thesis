@@ -78,6 +78,7 @@ export const getModuleContent = (
   moduleId: string
 ): ModuleContent | undefined => {
   const modules = moduleContents[topicId];
+  console.log(modules.find((m) => m.title === moduleId));
   if (!modules) return undefined;
   return modules.find((m) => m.title === moduleId);
 };

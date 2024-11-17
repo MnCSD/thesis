@@ -75,9 +75,9 @@ export function HeroSection() {
         className="flex gap-4 mb-16"
       >
         <GlowingButton>Get Started</GlowingButton>
-        <GlowingButton className="bg-white/5 !text-white hover:!text-[#55DC49]">
+        {/* <GlowingButton className="bg-white/5 !text-white hover:!text-[#55DC49]">
           Learn More
-        </GlowingButton>
+        </GlowingButton> */}
       </motion.div>
     </motion.div>
   );

@@ -15,6 +15,23 @@ import {
   Award,
 } from "lucide-react";
 
+interface ModuleSidebarProps {
+  moduleId: string;
+  status: "completed" | "in_progress" | "not_started";
+  stats?: {
+    totalQuestions: number;
+    correctAnswers: number;
+    accuracy: number;
+    bestStreak: number;
+    xpEarned: number;
+  };
+  progress?: {
+    timeSpent: number;
+    progress: number;
+    completedAt?: number;
+  };
+}
+
 const resources = [
   {
     icon: FileText,
@@ -36,10 +53,15 @@ const resources = [
 export function ModuleSidebar({
   moduleId,
   status,
-}: {
-  moduleId: string;
-  status: "completed" | "in-progress" | "locked";
-}) {
+  stats,
+  progress,
+}: ModuleSidebarProps) {
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   if (status === "completed") {
     return (
       <div className="space-y-6">
@@ -61,15 +83,23 @@ export function ModuleSidebar({
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
                 <span className="text-gray-300">Accuracy</span>
-                <span className="text-[#55DC49] font-semibold">95%</span>
+                <span className="text-[#55DC49] font-semibold">
+                  {stats?.accuracy ? Math.round(stats.accuracy) : 0}%
+                </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
                 <span className="text-gray-300">Time Spent</span>
-                <span className="text-[#55DC49] font-semibold">14:32 mins</span>
+                <span className="text-[#55DC49] font-semibold">
+                  {progress?.timeSpent
+                    ? formatTime(progress.timeSpent)
+                    : "0:00"}
+                </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
                 <span className="text-gray-300">XP Gained</span>
-                <span className="text-[#55DC49] font-semibold">150 XP</span>
+                <span className="text-[#55DC49] font-semibold">
+                  {stats?.xpEarned || 0} XP
+                </span>
               </div>
             </div>
           </Card>
@@ -85,14 +115,21 @@ export function ModuleSidebar({
               Achievements
             </h3>
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Star className="w-5 h-5 text-yellow-400" />
-                <span className="text-gray-300">First Try Success</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Award className="w-5 h-5 text-purple-400" />
-                <span className="text-gray-300">Speed Learner</span>
-              </div>
+              {stats?.accuracy === 100 && (
+                <div className="flex items-center gap-3">
+                  <Star className="w-5 h-5 text-yellow-400" />
+                  <span className="text-gray-300">Perfect Score</span>
+                </div>
+              )}
+              {/* @ts-ignore */}
+              {stats?.bestStreak >= 3 && (
+                <div className="flex items-center gap-3">
+                  <Award className="w-5 h-5 text-purple-400" />
+                  <span className="text-gray-300">
+                    Hot Streak ({stats?.bestStreak})
+                  </span>
+                </div>
+              )}
             </div>
           </Card>
         </motion.div>

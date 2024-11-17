@@ -18,12 +18,16 @@ export function ModuleHeader({
   topicId,
   moduleId,
   status,
+  onComplete,
 }: {
   topicId: string;
   moduleId: string;
-  status: "completed" | "in-progress" | "locked";
+  status: "completed" | "in_progress" | "locked";
+  onComplete: () => void;
 }) {
   const router = useRouter();
+
+  console.log(status);
 
   return (
     <motion.div
@@ -43,9 +47,10 @@ export function ModuleHeader({
             Back to {topicId}
           </motion.button>
 
-          {status === "in-progress" && (
+          {status === "in_progress" && (
             <Button
               variant="outline"
+              onClick={onComplete}
               className="border-[#55DC49]/30 text-black font-bold bg-[#55DC49]/70 hover:border-[#55DC49] hover:bg-[#55DC49]/10 hover:text-white"
             >
               Mark as Complete
@@ -67,7 +72,7 @@ export function ModuleHeader({
               ${
                 status === "completed"
                   ? "bg-[#55DC49]/20"
-                  : status === "in-progress"
+                  : status === "in_progress"
                     ? "bg-yellow-500/20"
                     : "bg-gray-500/20"
               }`}
@@ -103,7 +108,7 @@ export function ModuleHeader({
             </div>
           </div>
 
-          {status === "in-progress" && (
+          {/* {status === "in_progress" && (
             <div className="flex-shrink-0 w-full md:w-64">
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-gray-400">Progress</span>
@@ -111,7 +116,7 @@ export function ModuleHeader({
               </div>
               <Progress value={60} className="h-2 bg-[#2A2A2A]" />
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </motion.div>

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 interface GlowingButtonProps {
@@ -10,10 +11,17 @@ export function GlowingButton({
   children,
   className = "",
 }: GlowingButtonProps) {
+  const router = useRouter();
+
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      onClick={() => {
+        if (children === "Get Started") {
+          router.push("/auth");
+        }
+      }}
       className={`
         relative px-8 py-4 bg-[#55DC49]/10 text-[#55DC49] rounded-xl
         overflow-hidden group transition-all duration-300

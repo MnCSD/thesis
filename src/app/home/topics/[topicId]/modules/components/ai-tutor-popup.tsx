@@ -4,14 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getQuestionExplanation } from "@/app/utils/ai-tutor";
 import { formatContent } from "@/app/utils/format-content";
 import { toast } from "sonner";
-import {
-  CodeBlock,
-  textVariants,
-} from "@/app/home/chat/components/chat-message";
+import { textVariants } from "@/app/home/chat/components/chat-message";
 
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { useCreateNote } from "@/features/notes/use-create-note";
+import { CodeBlock } from "@/app/home/chat/components/code-block";
 
 interface AiTutorPopupProps {
   isOpen: boolean;
@@ -36,7 +34,7 @@ export function AiTutorPopup({
   const [isLoading, setIsLoading] = useState(true);
   const formattedContent = formatContent(explanation);
   const { data: user } = useCurrentUser();
-  const { mutate: createNote, isPending: isSaving } = useCreateNote();
+  const { create } = useCreateNote();
 
   useEffect(() => {
     if (isOpen && question) {
@@ -61,27 +59,19 @@ export function AiTutorPopup({
     }
 
     try {
-      await createNote(
-        {
-          userId: user._id,
-          chatId,
-          messageId,
-          content: explanation,
-          title: question,
-          tags,
-        },
-        {
-          onSuccess: () => {
-            console.log("Saved!");
-            toast.success("Note saved successfully!");
-          },
-          onError: () => {
-            toast.error("Failed to save note");
-          },
-        }
-      );
+      await create({
+        userId: user._id,
+        chatId,
+        messageId,
+        content: explanation,
+        title: question,
+        tags,
+      });
+
+      toast.success("Note created successfully!");
     } catch (error) {
       console.error("Error saving note:", error);
+      toast.error("Failed to create note");
     }
   };
 
@@ -210,13 +200,13 @@ export function AiTutorPopup({
                 <div className="sticky bottom-0 bg-[#1A1A1A] border-t border-[#55DC49]/10 p-4 flex justify-between items-center">
                   <button
                     onClick={handleSaveNote}
-                    disabled={isLoading || isSaving}
+                    disabled={isLoading}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium 
                     bg-[#232323] hover:bg-[#2a2a2a] text-white border border-[#55DC49]/20 
                     transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <BookmarkPlus className="w-4 h-4" />
-                    {isSaving ? "Saving..." : "Save to Notes"}
+                    {/* {isSaving ? "Saving..." : "Save to Notes"} */}
                   </button>
                   <button
                     onClick={onClose}

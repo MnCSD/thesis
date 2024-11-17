@@ -14,49 +14,74 @@ import {
   Share2,
 } from "lucide-react";
 
-const achievements = [
-  {
-    icon: Clock,
-    title: "Completion Time",
-    value: "14:32 mins",
-    color: "text-blue-400",
-    bgColor: "bg-blue-400/10",
-  },
-  {
-    icon: Star,
-    title: "Performance Score",
-    value: "95%",
-    color: "text-yellow-400",
-    bgColor: "bg-yellow-400/10",
-  },
-  {
-    icon: Zap,
-    title: "XP Earned",
-    value: "150 XP",
-    color: "text-purple-400",
-    bgColor: "bg-purple-400/10",
-  },
-];
+interface ModuleReviewProps {
+  moduleId: string;
+  stats: {
+    totalQuestions: number;
+    correctAnswers: number;
+    accuracy: number;
+    bestStreak: number;
+    xpEarned: number;
+    updatedAt: number;
+  };
+  timeSpent: number;
+  completedAt?: number;
+}
 
-const completedLessons = [
-  {
-    title: "Introduction to Core Concepts",
-    duration: "5:30",
-    score: "100%",
-  },
-  {
-    title: "Understanding Key Principles",
-    duration: "8:45",
-    score: "90%",
-  },
-  {
-    title: "Practice Exercise 1",
-    duration: "15:00",
-    score: "95%",
-  },
-];
+export function ModuleReview({
+  moduleId,
+  stats,
+  timeSpent,
+  completedAt,
+}: ModuleReviewProps) {
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
 
-export function ModuleReview({ moduleId }: { moduleId: string }) {
+  const achievements = [
+    {
+      icon: Clock,
+      title: "Completion Time",
+      value: formatTime(timeSpent),
+      color: "text-blue-400",
+      bgColor: "bg-blue-400/10",
+    },
+    {
+      icon: Star,
+      title: "Performance Score",
+      value: `${Math.round(stats.accuracy)}%`,
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-400/10",
+    },
+    {
+      icon: Zap,
+      title: "XP Earned",
+      value: `${stats.xpEarned} XP`,
+      color: "text-purple-400",
+      bgColor: "bg-purple-400/10",
+    },
+  ];
+
+  const completedLessons = [
+    {
+      title: "Quiz Performance",
+      duration: formatTime(timeSpent),
+      score: `${Math.round(stats.accuracy)}%`,
+    },
+    {
+      title: "Best Streak",
+      duration: `${stats.bestStreak} correct in a row`,
+      score: "100%",
+    },
+    {
+      title: "Questions Answered",
+      duration: `${stats.correctAnswers}/${stats.totalQuestions}`,
+      score: `${Math.round((stats.correctAnswers / stats.totalQuestions) * 100)}%`,
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <motion.div
@@ -71,8 +96,8 @@ export function ModuleReview({ moduleId }: { moduleId: string }) {
           Module Completed!
         </h2>
         <p className="text-gray-400 max-w-lg mx-auto">
-          Congratulations on completing this module. You've demonstrated
-          excellent understanding of the material.
+          Congratulations! You've completed this module with{" "}
+          {Math.round(stats.accuracy)}% accuracy.
         </p>
       </motion.div>
 
@@ -109,7 +134,7 @@ export function ModuleReview({ moduleId }: { moduleId: string }) {
         <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-white">
-              Lesson Completion
+              Performance Summary
             </h3>
             <BarChart3 className="w-5 h-5 text-[#55DC49]" />
           </div>
