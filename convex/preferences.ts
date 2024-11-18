@@ -9,7 +9,7 @@ export const update = mutation({
       v.union(
         v.literal("Mathematics"),
         v.literal("Science"),
-        v.literal("Coding"),
+        v.literal("Computer Science"),
         v.literal("Language Arts"),
         v.literal("Other")
       )
@@ -58,7 +58,7 @@ export const create = mutation({
       v.union(
         v.literal("Mathematics"),
         v.literal("Science"),
-        v.literal("Coding"),
+        v.literal("Computer Science"),
         v.literal("Language Arts"),
         v.literal("Other")
       )

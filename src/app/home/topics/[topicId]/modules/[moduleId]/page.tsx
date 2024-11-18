@@ -16,6 +16,7 @@ export default function ModuleDetail({
 }) {
   const topicId = decodeURIComponent(params.topicId);
   const moduleId = decodeURIComponent(params.moduleId);
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     progress,
@@ -24,27 +25,46 @@ export default function ModuleDetail({
     updateTimeAndProgress,
   } = useModuleProgress(moduleId, topicId);
 
-  const [currentSlide, setCurrentSlide] = useState(
-    progress?.progress?.currentSlide
-  );
+  const [currentSlide, setCurrentSlide] = useState<number | null>(null);
   const moduleContent = getModuleContent(topicId, moduleId);
-  const totalSlides = moduleContent?.slides.length || 0;
+  const totalSlides = moduleContent?.slides.length || 10;
+
+  //create a function to submit the quiz answer and complete the module when we are at the last slide
+
+  // Update currentSlide when progress data is available
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (progress?.progress?.currentSlide !== undefined) {
+        setCurrentSlide(progress.progress.currentSlide);
+      } else {
+        setCurrentSlide(0); // Only set to 0 if no progress exists
+      }
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [progress?.progress?.currentSlide]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      // @ts-ignore
-      const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
-      // @ts-ignore
+    if (currentSlide === null) return; // Don't update if currentSlide is not yet initialized
 
+    const interval = setInterval(() => {
       if (progress?.progress?.status !== "completed") {
-        updateTimeAndProgress(1, progressPercentage, currentSlide as number);
+        const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
+        updateTimeAndProgress(1, progressPercentage, currentSlide);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentSlide, totalSlides, moduleId, updateTimeAndProgress]);
+  }, [
+    currentSlide,
+    totalSlides,
+    moduleId,
+    updateTimeAndProgress,
+    progress?.progress?.status,
+  ]);
 
-  if (!progress || !moduleContent) {
+  if (!moduleContent) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#55DC49]"></div>
@@ -52,10 +72,34 @@ export default function ModuleDetail({
     );
   }
 
-  const moduleStatus = progress.progress?.status || "not_started";
-  const isCompleted = moduleStatus === "completed";
+  if (isLoading || currentSlide === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#0F0F0F] to-[#1A1A1A] flex flex-col items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="w-24 h-24 rounded-2xl bg-[#55DC49]/20 flex items-center justify-center mb-8 mx-auto">
+            <div className="w-12 h-12 border-4 border-[#55DC49] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-4">Loading Module</h2>
+          <p className="text-gray-400">Preparing your learning experience...</p>
+          <div className="mt-8 w-64 h-2 bg-[#232323] rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 2, ease: "linear" }}
+              className="h-full bg-[#55DC49]"
+            />
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
-  console.log(moduleStatus);
+  const moduleStatus = progress?.progress?.status || "not_started";
+  const isCompleted = moduleStatus === "completed";
 
   return (
     <motion.div
@@ -68,8 +112,8 @@ export default function ModuleDetail({
         moduleId={moduleId}
         // @ts-ignore
         status={moduleStatus}
-        progress={progress.progress?.progress || 0}
-        timeSpent={progress.progress?.timeSpent || 0}
+        progress={progress?.progress?.progress || 0}
+        timeSpent={progress?.progress?.timeSpent || 0}
         onComplete={handleModuleComplete}
       />
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
@@ -79,13 +123,12 @@ export default function ModuleDetail({
               <ModuleReview
                 moduleId={moduleId}
                 // @ts-ignore
-                stats={progress.stats}
-                timeSpent={progress.progress?.timeSpent || 0}
-                completedAt={progress.progress?.completedAt}
+                stats={progress?.stats}
+                timeSpent={progress?.progress?.timeSpent || 0}
+                completedAt={progress?.progress?.completedAt}
               />
             ) : (
               <ModuleContent
-                // @ts-ignore
                 currentSlide={currentSlide}
                 setCurrentSlide={setCurrentSlide}
                 moduleId={moduleId}
@@ -99,9 +142,9 @@ export default function ModuleDetail({
               moduleId={moduleId}
               status={moduleStatus}
               // @ts-ignore
-              stats={progress.stats}
+              stats={progress?.stats}
               // @ts-ignore
-              progress={progress.progress}
+              progress={progress?.progress}
             />
           </div>
         </div>

@@ -35,9 +35,7 @@ export function ModuleContent({
   setCurrentSlide,
   currentSlide,
 }: ModuleContentProps) {
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(
-    currentSlide | 0
-  );
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(currentSlide);
   const [showQuiz, setShowQuiz] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
@@ -45,7 +43,8 @@ export function ModuleContent({
   const [showCompletion, setShowCompletion] = useState(false);
   const { data: user } = useCurrentUser();
   const createChat = useMutation(api.messages.createChat);
-  const { updateTimeAndProgress } = useModuleProgress(moduleId, topicId);
+  const { updateTimeAndProgress, handleModuleComplete: completeQuiz } =
+    useModuleProgress(moduleId, topicId);
 
   const moduleContent = getModuleContent(topicId, moduleId);
 
@@ -61,17 +60,18 @@ export function ModuleContent({
   }
 
   useEffect(() => {
-    const progress =
-      ((currentSectionIndex + 1) / moduleContent.slides.length) * 100;
+    setCurrentSectionIndex(currentSlide);
+  }, [currentSlide]);
 
-    localStorage.setItem(
-      `module-progress-${moduleId}`,
-      JSON.stringify({
-        currentSlide: currentSectionIndex,
-      })
+  useEffect(() => {
+    const progress = Math.round(
+      ((currentSectionIndex + 1) / moduleContent.slides.length) * 100
     );
 
-    updateTimeAndProgress(1, progress, currentSectionIndex);
+    // Only update progress if it's greater than the current progress
+    if (progress > 0) {
+      updateTimeAndProgress(1, progress, currentSectionIndex);
+    }
   }, [
     currentSectionIndex,
     moduleId,
@@ -80,28 +80,41 @@ export function ModuleContent({
   ]);
 
   const currentSection = moduleContent.slides[currentSectionIndex];
-
-  const progress =
-    ((currentSectionIndex + 1) / moduleContent.slides.length) * 100;
+  const progress = Math.round(
+    ((currentSectionIndex + 1) / moduleContent.slides.length) * 100
+  );
 
   const handleNext = async () => {
     if (currentSection.quiz && !hasAnswered) {
       setShowQuiz(true);
     } else if (currentSectionIndex < moduleContent.slides.length - 1) {
-      setCurrentSectionIndex((prev) => prev + 1);
+      const nextIndex = currentSectionIndex + 1;
+      setCurrentSectionIndex(nextIndex);
+      setCurrentSlide(nextIndex);
       setShowQuiz(false);
       setSelectedAnswer(null);
       setHasAnswered(false);
-      setCurrentSlide(currentSlide + 1);
     } else {
       setShowCompletion(true);
+      await handleFinalModuleCompletion();
+    }
+  };
+
+  const handleFinalModuleCompletion = async () => {
+    try {
+      // Explicitly set module to completed status
       await handleModuleComplete();
+      await onQuizSubmit("module-complete", -1, true);
+    } catch (error) {
+      console.error("Error completing module:", error);
+      toast.error("Failed to complete module");
     }
   };
 
   const handleModuleComplete = async () => {
     try {
       await onQuizSubmit("module-complete", -1, true);
+      await completeQuiz();
     } catch (error) {
       console.error("Error completing module:", error);
       toast.error("Failed to complete module");
@@ -110,11 +123,12 @@ export function ModuleContent({
 
   const handlePrevious = () => {
     if (currentSectionIndex > 0) {
-      setCurrentSectionIndex((prev) => prev - 1);
+      const prevIndex = currentSectionIndex - 1;
+      setCurrentSectionIndex(prevIndex);
+      setCurrentSlide(prevIndex);
       setShowQuiz(false);
       setSelectedAnswer(null);
       setHasAnswered(false);
-      setCurrentSlide(currentSlide - 1);
     }
   };
 
@@ -153,7 +167,8 @@ export function ModuleContent({
     <div className="space-y-6">
       {showCompletion && (
         <ModuleCompletion
-          onClose={() => {
+          onClose={async () => {
+            await handleModuleComplete();
             setShowCompletion(false);
             window.history.back();
           }}

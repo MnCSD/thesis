@@ -19,6 +19,8 @@ export default function NoteDetailPage() {
   const { useGetNote } = useNotes();
   const { note, isLoading } = useGetNote(noteId as Id<"notes">);
 
+  console.log(note);
+
   if (isLoading) {
     return <LoadingState />;
   }
@@ -60,7 +62,7 @@ export default function NoteDetailPage() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 shadow-xl mb-6"
+          className="bg-black backdrop-blur-lg rounded-2xl p-8 shadow-xl mb-6"
         >
           <NoteContent title={note.title} content={note.content} />
 
@@ -71,7 +73,6 @@ export default function NoteDetailPage() {
         <div
           className="fixed inset-0 pointer-events-none opacity-5"
           style={{
-            backgroundImage: "url('/paper-texture.png')",
             backgroundSize: "cover",
             mixBlendMode: "overlay",
           }}

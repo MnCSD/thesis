@@ -2,7 +2,7 @@ export type SignInFlow = "signIn" | "signUp";
 export type SubjectType =
   | "Mathematics"
   | "Science"
-  | "Coding"
+  | "Computer Science"
   | "Language Arts"
   | "Other";
 

@@ -48,7 +48,7 @@ const actions = [
     icon: Brain,
     title: "Knowledge Map",
     description: "Visualize your progress",
-    href: "/map",
+    href: "home/knowledge-map",
     color: "text-pink-400",
     bgColor: "bg-pink-400/10",
   },

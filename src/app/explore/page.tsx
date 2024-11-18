@@ -33,7 +33,7 @@ import { useGetPreferences } from "@/features/preferences/use-get-preferences";
 export const subjects: { name: SubjectType; image?: any }[] = [
   { name: "Mathematics", image: Mathematics },
   { name: "Science", image: Physics },
-  { name: "Coding", image: Board },
+  { name: "Computer Science", image: Board },
   { name: "Language Arts", image: Globe },
   { name: "Other" },
 ];

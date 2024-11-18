@@ -5,6 +5,7 @@ import { v } from "convex/values";
 export const getProgress = query({
   args: {
     moduleId: v.string(),
+    topicId: v.string(),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -15,8 +16,11 @@ export const getProgress = query({
 
     const progress = await ctx.db
       .query("moduleProgress")
-      .withIndex("by_user_module", (q) =>
-        q.eq("userId", userId).eq("moduleId", args.moduleId)
+      .withIndex("by_user_topic_module", (q) =>
+        q
+          .eq("userId", userId)
+          .eq("topicId", args.topicId)
+          .eq("moduleId", args.moduleId)
       )
       .first();
 
@@ -37,6 +41,7 @@ export const getProgress = query({
 export const updateProgress = mutation({
   args: {
     moduleId: v.string(),
+    topicId: v.string(),
     timeSpent: v.number(),
     progress: v.number(),
     currentSlide: v.number(),
@@ -50,8 +55,11 @@ export const updateProgress = mutation({
 
     const existingProgress = await ctx.db
       .query("moduleProgress")
-      .withIndex("by_user_module", (q) =>
-        q.eq("userId", userId).eq("moduleId", args.moduleId)
+      .withIndex("by_user_topic_module", (q) =>
+        q
+          .eq("userId", userId)
+          .eq("topicId", args.topicId)
+          .eq("moduleId", args.moduleId)
       )
       .first();
 
@@ -59,12 +67,12 @@ export const updateProgress = mutation({
       return await ctx.db.insert("moduleProgress", {
         userId,
         moduleId: args.moduleId,
+        topicId: args.topicId,
         status: "in_progress",
         progress: 0,
         currentSlide: 0,
         timeSpent: args.timeSpent,
         lastAccessedAt: Date.now(),
-        topicId: "",
       });
     }
 
@@ -146,8 +154,11 @@ export const completeModule = mutation({
 
     const progress = await ctx.db
       .query("moduleProgress")
-      .withIndex("by_user_module", (q) =>
-        q.eq("userId", userId).eq("moduleId", args.moduleId)
+      .withIndex("by_user_topic_module", (q) =>
+        q
+          .eq("userId", userId)
+          .eq("topicId", args.topicId)
+          .eq("moduleId", args.moduleId)
       )
       .first();
 

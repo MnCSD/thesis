@@ -3,7 +3,7 @@ import { api } from "../../../convex/_generated/api";
 import { useCallback } from "react";
 
 export const useModuleProgress = (moduleId: string, topicId: string) => {
-  const progress = useQuery(api.modules.getProgress, { moduleId });
+  const progress = useQuery(api.modules.getProgress, { moduleId, topicId });
   const updateProgress = useMutation(api.modules.updateProgress);
   const submitQuizAnswer = useMutation(api.modules.submitQuizAnswer);
   const completeModule = useMutation(api.modules.completeModule);
@@ -33,15 +33,15 @@ export const useModuleProgress = (moduleId: string, topicId: string) => {
       progressPercentage: number,
       currentSlide: number
     ) => {
-      console.log(progressPercentage);
       await updateProgress({
         moduleId,
         timeSpent,
+        topicId,
         progress: progressPercentage,
         currentSlide,
       });
     },
-    [moduleId, updateProgress]
+    [moduleId, topicId, updateProgress]
   );
 
   return {

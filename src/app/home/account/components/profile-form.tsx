@@ -147,10 +147,10 @@ export function ProfileForm({ user, preferences }: ProfileFormProps) {
                       Science
                     </SelectItem>
                     <SelectItem
-                      value="Coding"
+                      value="Computer Science"
                       className="text-white hover:bg-white/10"
                     >
-                      Coding
+                      Computer Science
                     </SelectItem>
                     <SelectItem
                       value="Language Arts"

@@ -10,7 +10,7 @@ const schema = defineSchema({
       v.union(
         v.literal("Mathematics"),
         v.literal("Science"),
-        v.literal("Coding"),
+        v.literal("Computer Science"),
         v.literal("Language Arts"),
         v.literal("Other")
       )
@@ -44,7 +44,8 @@ const schema = defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_user_topic", ["userId", "topicId"])
-    .index("by_user_module", ["userId", "moduleId"]),
+    .index("by_user_module", ["userId", "moduleId"])
+    .index("by_user_topic_module", ["userId", "topicId", "moduleId"]),
 
   quizAttempts: defineTable({
     userId: v.id("users"),
