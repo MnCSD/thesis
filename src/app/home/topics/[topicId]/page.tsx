@@ -217,10 +217,10 @@ export default function TopicDetail({
 
   const handleModuleClick = (moduleId: string, status: string) => {
     if (status !== "locked") {
-      const module = modules.find((m) => m.id === moduleId);
-      if (module) {
+      const my_module = modules.find((m) => m.id === moduleId);
+      if (my_module) {
         router.push(
-          `/home/topics/${encodeURIComponent(topicId)}/modules/${encodeURIComponent(module.title)}`
+          `/home/topics/${encodeURIComponent(topicId)}/modules/${encodeURIComponent(my_module.title)}`
         );
       }
     }

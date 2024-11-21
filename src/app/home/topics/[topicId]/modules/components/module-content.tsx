@@ -48,6 +48,28 @@ export function ModuleContent({
 
   const moduleContent = getModuleContent(topicId, moduleId);
 
+  useEffect(() => {
+    setCurrentSectionIndex(currentSlide);
+  }, [currentSlide]);
+
+  useEffect(() => {
+    if (moduleContent) {
+      const progress = Math.round(
+        ((currentSectionIndex + 1) / moduleContent.slides.length) * 100
+      );
+
+      // Only update progress if it's greater than the current progress
+      if (progress > 0) {
+        updateTimeAndProgress(1, progress, currentSectionIndex);
+      }
+    }
+  }, [
+    currentSectionIndex,
+    moduleId,
+    moduleContent?.slides?.length,
+    updateTimeAndProgress,
+  ]);
+
   if (!moduleContent || topicId == "Computer Science") {
     return (
       <div className="text-center p-8">
@@ -58,26 +80,6 @@ export function ModuleContent({
       </div>
     );
   }
-
-  useEffect(() => {
-    setCurrentSectionIndex(currentSlide);
-  }, [currentSlide]);
-
-  useEffect(() => {
-    const progress = Math.round(
-      ((currentSectionIndex + 1) / moduleContent.slides.length) * 100
-    );
-
-    // Only update progress if it's greater than the current progress
-    if (progress > 0) {
-      updateTimeAndProgress(1, progress, currentSectionIndex);
-    }
-  }, [
-    currentSectionIndex,
-    moduleId,
-    moduleContent.slides.length,
-    updateTimeAndProgress,
-  ]);
 
   const currentSection = moduleContent.slides[currentSectionIndex];
   const progress = Math.round(
