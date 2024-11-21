@@ -10,8 +10,6 @@ import {
   Users,
   GraduationCap,
   Trophy,
-  Star,
-  Award,
 } from "lucide-react";
 
 interface ModuleSidebarProps {
@@ -80,7 +78,14 @@ export function ModuleSidebar({ status, stats, progress }: ModuleSidebarProps) {
               <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
                 <span className="text-gray-300">Accuracy</span>
                 <span className="text-[#55DC49] font-semibold">
-                  {stats?.accuracy ? Math.round(stats.accuracy) : 0}%
+                  {stats?.accuracy
+                    ? Math.round(
+                        ((stats.correctAnswers - 2) /
+                          (stats.totalQuestions - 2)) *
+                          100
+                      )
+                    : 0}
+                  %
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
@@ -91,12 +96,6 @@ export function ModuleSidebar({ status, stats, progress }: ModuleSidebarProps) {
                     : "0:00"}
                 </span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
-                <span className="text-gray-300">XP Gained</span>
-                <span className="text-[#55DC49] font-semibold">
-                  {stats?.xpEarned || 0} XP
-                </span>
-              </div>
             </div>
           </Card>
         </motion.div>
@@ -105,30 +104,7 @@ export function ModuleSidebar({ status, stats, progress }: ModuleSidebarProps) {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-        >
-          <Card className="bg-[#1A1A1A]/50 backdrop-blur-xl border-[#55DC49]/10 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Achievements
-            </h3>
-            <div className="space-y-4">
-              {stats?.accuracy === 100 && (
-                <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5 text-yellow-400" />
-                  <span className="text-gray-300">Perfect Score</span>
-                </div>
-              )}
-              {/* @ts-expect-error */}
-              {stats?.bestStreak >= 3 && (
-                <div className="flex items-center gap-3">
-                  <Award className="w-5 h-5 text-purple-400" />
-                  <span className="text-gray-300">
-                    Hot Streak ({stats?.bestStreak})
-                  </span>
-                </div>
-              )}
-            </div>
-          </Card>
-        </motion.div>
+        ></motion.div>
 
         <motion.div
           initial={{ opacity: 0, x: 20 }}

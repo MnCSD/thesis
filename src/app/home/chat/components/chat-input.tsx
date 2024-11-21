@@ -44,7 +44,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
             ? "0 0 20px rgba(85, 220, 73, 0.2), inset 0 0 80px rgba(85, 220, 73, 0.03)"
             : "0 0 15px rgba(0, 0, 0, 0.2), inset 0 0 60px rgba(0, 0, 0, 0.1)",
         }}
-        className="relative rounded-xl bg-[#1A1A1A] border border-[#333333] transition-all duration-300 max-w-2xl mx-auto"
+        className="relative rounded-xl bg-[#1A1A1A] border border-[#333333] transition-all duration-300 md:max-w-2xl mx-auto w-[80%] md:w-[unset]"
       >
         <form onSubmit={handleSubmit} className="relative flex items-center">
           <div className="absolute left-3 flex gap-2">

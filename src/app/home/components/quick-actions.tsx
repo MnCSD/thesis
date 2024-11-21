@@ -13,14 +13,6 @@ import Link from "next/link";
 
 const actions = [
   {
-    icon: Calculator,
-    title: "Practice Problems",
-    description: "Solve interactive exercises",
-    href: "/practice",
-    color: "text-purple-400",
-    bgColor: "bg-purple-400/10",
-  },
-  {
     icon: BookMarked,
     title: "Study Notes",
     description: "Access your saved materials",
@@ -29,36 +21,12 @@ const actions = [
     bgColor: "bg-blue-400/10",
   },
   {
-    icon: History,
-    title: "Learning History",
-    description: "Review past sessions",
-    href: "/history",
-    color: "text-orange-400",
-    bgColor: "bg-orange-400/10",
-  },
-  {
-    icon: Award,
-    title: "Achievements",
-    description: "Track your milestones",
-    href: "/achievements",
-    color: "text-yellow-400",
-    bgColor: "bg-yellow-400/10",
-  },
-  {
     icon: Brain,
     title: "Knowledge Map",
     description: "Visualize your progress",
     href: "home/knowledge-map",
     color: "text-pink-400",
     bgColor: "bg-pink-400/10",
-  },
-  {
-    icon: Lightbulb,
-    title: "Daily Challenge",
-    description: "Test your skills",
-    href: "/challenge",
-    color: "text-cyan-400",
-    bgColor: "bg-cyan-400/10",
   },
 ];
 

@@ -89,19 +89,11 @@ export function ModuleHeader({
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
-                  <span>25 mins</span>
+                  <span>15 mins</span>
                 </div>
                 <div className="flex items-center">
                   <BookOpen className="w-4 h-4 mr-2" />
-                  <span>5 lessons</span>
-                </div>
-                <div className="flex items-center">
-                  <Users className="w-4 h-4 mr-2" />
-                  <span>982 students</span>
-                </div>
-                <div className="flex items-center">
-                  <Trophy className="w-4 h-4 mr-2" />
-                  <span>100 XP</span>
+                  <span>10 lessons</span>
                 </div>
               </div>
             </div>

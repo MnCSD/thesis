@@ -46,16 +46,9 @@ export function ModuleReview({ stats, timeSpent }: ModuleReviewProps) {
     {
       icon: Star,
       title: "Performance Score",
-      value: `${Math.round(stats.accuracy)}%`,
+      value: `${Math.round(((stats.correctAnswers - 2) / (stats.totalQuestions - 2)) * 100)}%`,
       color: "text-yellow-400",
       bgColor: "bg-yellow-400/10",
-    },
-    {
-      icon: Zap,
-      title: "XP Earned",
-      value: `${stats.xpEarned} XP`,
-      color: "text-purple-400",
-      bgColor: "bg-purple-400/10",
     },
   ];
 
@@ -63,17 +56,12 @@ export function ModuleReview({ stats, timeSpent }: ModuleReviewProps) {
     {
       title: "Quiz Performance",
       duration: formatTime(timeSpent),
-      score: `${Math.round(stats.accuracy)}%`,
-    },
-    {
-      title: "Best Streak",
-      duration: `${stats.bestStreak} correct in a row`,
-      score: "100%",
+      score: `${Math.round(((stats.correctAnswers - 2) / (stats.totalQuestions - 2)) * 100)}%`,
     },
     {
       title: "Questions Answered",
-      duration: `${stats.correctAnswers}/${stats.totalQuestions}`,
-      score: `${Math.round((stats.correctAnswers / stats.totalQuestions) * 100)}%`,
+      duration: `${stats.correctAnswers - 2}/${stats.totalQuestions - 2}`,
+      score: `${Math.round(((stats.correctAnswers - 2) / (stats.totalQuestions - 2)) * 100)}%`,
     },
   ];
 
@@ -91,8 +79,11 @@ export function ModuleReview({ stats, timeSpent }: ModuleReviewProps) {
           Module Completed!
         </h2>
         <p className="text-gray-400 max-w-lg mx-auto">
-          Congratulations! You&apos;ve completed this module with{" "}
-          {Math.round(stats.accuracy)}% accuracy.
+          Congratulations! You&apos;ve completed this module with {""}
+          {Math.round(
+            ((stats.correctAnswers - 2) / (stats.totalQuestions - 2)) * 100
+          )}
+          % accuracy.
         </p>
       </motion.div>
 
@@ -100,7 +91,7 @@ export function ModuleReview({ stats, timeSpent }: ModuleReviewProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         {achievements.map((achievement, index) => (
           <Card
@@ -151,29 +142,6 @@ export function ModuleReview({ stats, timeSpent }: ModuleReviewProps) {
             ))}
           </div>
         </Card>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="flex flex-col sm:flex-row gap-4"
-      >
-        <Button
-          className="flex-1 bg-[#55DC49] hover:bg-[#3AA831] text-black font-semibold h-12
-            transition-all duration-300 hover:shadow-lg hover:shadow-[#55DC49]/20"
-        >
-          <Award className="w-5 h-5 mr-2" />
-          View Certificate
-        </Button>
-        <Button
-          variant="outline"
-          className="flex-1 border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10
-            transition-all duration-300"
-        >
-          <Share2 className="w-5 h-5 mr-2" />
-          Share Achievement
-        </Button>
       </motion.div>
     </div>
   );

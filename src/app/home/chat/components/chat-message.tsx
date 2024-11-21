@@ -205,7 +205,7 @@ export function ChatMessage({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className={`flex ${isAI ? "justify-start" : "justify-end"} ${
-        isAI ? "pl-0 pr-20" : "pl-20 pr-0"
+        isAI ? "pl-0 pr-10" : "pl-20 pr-0"
       } relative group`}
     >
       {isAI && (
@@ -218,13 +218,13 @@ export function ChatMessage({
             damping: 20,
             delay: 0.1,
           }}
-          className="relative w-[120px] h-[140px] mr-4 flex-shrink-0"
+          className="relative md:w-[120px] w-[40px] h-[140px] mr-4 flex-shrink-0"
         >
           <Image
             src={Figure}
             alt="AI Teacher"
             fill
-            className="object-contain"
+            className="object-contain hidden md:block"
             priority
           />
         </motion.div>
@@ -239,7 +239,7 @@ export function ChatMessage({
           damping: 30,
           delay: isAI ? 0.2 : 0,
         }}
-        className={`max-w-[70%] rounded-xl px-6 py-4 relative ${
+        className={`md:max-w-[70%] max-w-[86%] rounded-xl px-6 py-4 relative ${
           isAI
             ? "bg-[#2A2A2A] shadow-[0_0_15px_rgba(0,0,0,0.2),inset_0_0_80px_rgba(0,0,0,0.3)] border-2 border-[#404040] group-hover:border-[#55DC49]/30 transition-all duration-300"
             : "bg-transparent"

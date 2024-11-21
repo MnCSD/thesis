@@ -362,10 +362,9 @@ export default function TopicDetail({
                               </div>
                               <Button
                                 variant="outline"
-                                className={`${module.status === "locked" ? "opacity-50 cursor-not-allowed" : ""} 
+                                className={`
                                 border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10 min-w-[100px] hover:text-white
                                 transition-all duration-300`}
-                                disabled={module.status === "locked"}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleModuleClick(module.id, module.status);
@@ -505,25 +504,7 @@ export default function TopicDetail({
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-white font-semibold">Statistics</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30 transition-all duration-300">
-                        <Clock className="w-5 h-5 text-[#55DC49] mb-2" />
-                        <p className="text-gray-400 text-sm">Time Spent</p>
-                        <p className="text-white font-bold text-lg">
-                          {formatTime(totalTimeSpent)}
-                        </p>
-                      </Card>
-                      <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30 transition-all duration-300">
-                        <Trophy className="w-5 h-5 text-[#55DC49] mb-2" />
-                        <p className="text-gray-400 text-sm">Completed</p>
-                        <p className="text-white font-bold text-lg">
-                          {completedModules}/{modules.length}
-                        </p>
-                      </Card>
-                    </div>
-                  </div>
+                  <div className="space-y-4"></div>
 
                   <Button
                     className="w-full bg-[#55DC49] hover:bg-[#3AA831] text-black font-semibold h-12 text-lg
