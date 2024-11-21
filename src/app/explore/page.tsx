@@ -79,7 +79,6 @@ const ExplorePage = () => {
   };
 
   if (!data) return null;
-  7;
 
   if (isLoading) {
     return (

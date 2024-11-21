@@ -49,7 +49,7 @@ export default function StudyNotes() {
         .sort(
           (
             a: { timestamp: number; title: string },
-            b: { timestamp: number; title: any }
+            b: { timestamp: number; title: string }
           ) => {
             switch (sortBy) {
               case "oldest":

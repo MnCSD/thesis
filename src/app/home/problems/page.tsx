@@ -78,7 +78,8 @@ export default function PracticeProblems() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
 
-  const handleCategoryClick = (category: any) => {
+  // @ts-expect-error error message
+  const handleCategoryClick = (category) => {
     if (selectedCategory === category) {
       setSelectedCategory(null);
       setSelectedDifficulty(null);

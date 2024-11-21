@@ -1,11 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 
 import { ProfileHeader } from "./components/profile-header";
@@ -13,7 +8,6 @@ import { ProfileForm } from "./components/profile-form";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { useGetPreferences } from "@/features/preferences/use-get-preferences";
-import { useUpdatePreference } from "@/features/preferences/use-update-preference";
 
 export default function AccountPage() {
   const { data: user, isLoading } = useCurrentUser();

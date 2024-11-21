@@ -73,7 +73,7 @@ export default function Home() {
     if (user) {
       redirect("/explore");
     }
-  }, []);
+  }, [user]);
 
   return (
     <div ref={containerRef} className="min-h-screen w-full overflow-hidden">

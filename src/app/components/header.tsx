@@ -1,12 +1,9 @@
 import Image from "next/image";
 import React from "react";
 import Logo from "../images/logo.png";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export const Header = () => {
-  const router = useRouter();
-
   return (
     <div className="w-full pt-2 z-[999]">
       <div className="flex items-center justify-between pr-10">

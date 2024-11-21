@@ -48,8 +48,6 @@ export function ModuleContent({
 
   const moduleContent = getModuleContent(topicId, moduleId);
 
-  console.log(moduleContent);
-
   if (!moduleContent || topicId == "Computer Science") {
     return (
       <div className="text-center p-8">

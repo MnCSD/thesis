@@ -126,7 +126,7 @@ export function ChatContainer({
             animate={{ opacity: 1 }}
             className="text-center text-gray-500 mb-8"
           >
-            <p className="text-lg">Hi! I'm here to help you learn.</p>
+            <p className="text-lg">Hi! I&apos;m here to help you learn.</p>
             <p className="text-sm">What would you like to explore today?</p>
           </motion.div>
         )}

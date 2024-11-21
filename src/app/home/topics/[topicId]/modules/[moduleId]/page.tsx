@@ -114,7 +114,7 @@ export default function ModuleDetail({
       <ModuleHeader
         topicId={topicId}
         moduleId={moduleId}
-        // @ts-ignore
+        // @ts-expect-error
         status={moduleStatus}
         progress={progress?.progress?.progress || 0}
         timeSpent={progress?.progress?.timeSpent || 0}
@@ -127,7 +127,7 @@ export default function ModuleDetail({
               {isCompleted ? (
                 <ModuleReview
                   moduleId={moduleId}
-                  // @ts-ignore
+                  // @ts-expect-error
                   stats={progress?.stats}
                   timeSpent={progress?.progress?.timeSpent || 0}
                   completedAt={progress?.progress?.completedAt}
@@ -146,9 +146,9 @@ export default function ModuleDetail({
               <ModuleSidebar
                 moduleId={moduleId}
                 status={moduleStatus}
-                // @ts-ignore
+                // @ts-expect-error
                 stats={progress?.stats}
-                // @ts-ignore
+                // @ts-expect-error
                 progress={progress?.progress}
               />
             </div>

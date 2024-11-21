@@ -53,7 +53,7 @@ export function ChatMessage({
   isSelected,
 }: ChatMessageProps) {
   const isAI = message.sender === "ai";
-  const [_isWriting, setIsWriting] = useState(true);
+  const [isWriting, setIsWriting] = useState(true);
   const [selectedBlocks, setSelectedBlocks] = useState<SelectedBlock[]>([]);
   const [isHoveringNote, setIsHoveringNote] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
@@ -74,7 +74,7 @@ export function ChatMessage({
       );
       return () => clearTimeout(timer);
     }
-  }, [isAI, isLoading, totalAnimationTime]);
+  }, [isAI, isLoading, totalAnimationTime, setIsWriting, isWriting]);
 
   const handleNoteClick = () => {
     if (selectionMode && selectedBlocks.length > 0) {
