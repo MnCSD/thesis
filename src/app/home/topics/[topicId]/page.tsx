@@ -85,7 +85,7 @@ export default function TopicDetail({
   );
 
   // Initialize modules with sections and progress tracking
-  const [modules, _setModules] = useState<Module[]>([
+  const [modules, setModules] = useState<Module[]>([
     {
       id: "1",
       title: "Introduction to the Basics",
