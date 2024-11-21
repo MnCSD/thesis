@@ -2,16 +2,23 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { BookmarkPlus, Plus, Check } from "lucide-react";
+import { BookmarkPlus, Check } from "lucide-react";
 import Figure from "../../../images/teacher-3d.png";
 import { formatContent } from "@/app/utils/format-content";
 import { Id } from "../../../../../convex/_generated/dataModel";
-import { SelectionOverlay } from "./selection-overlay";
 import { CodeBlock } from "./code-block";
 
-interface SelectedBlock {
+export interface SelectedBlock {
   content: string;
   type: string;
+  language?: string;
+  key?: string;
+  items?: Array<{
+    type: "list-item" | "text";
+    number?: string;
+    content: string;
+  }>;
+  number?: number | string;
 }
 
 interface Message {
@@ -46,7 +53,7 @@ export function ChatMessage({
   isSelected,
 }: ChatMessageProps) {
   const isAI = message.sender === "ai";
-  const [isWriting, setIsWriting] = useState(true);
+  const [_isWriting, setIsWriting] = useState(true);
   const [selectedBlocks, setSelectedBlocks] = useState<SelectedBlock[]>([]);
   const [isHoveringNote, setIsHoveringNote] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
@@ -98,7 +105,7 @@ export function ChatMessage({
     return selectedBlocks.some((block) => block.content === content);
   };
 
-  const renderBlock = (block: any) => {
+  const renderBlock = (block: SelectedBlock) => {
     if (block.type === "code") {
       return (
         <div
@@ -110,9 +117,9 @@ export function ChatMessage({
           } ${isBlockSelected(block.content) ? "ring-2 ring-[#55DC49] bg-[#55DC49]/10" : ""}`}
         >
           <CodeBlock
-            key={block.key}
+            key={block.content}
             content={block.content}
-            language={block.language}
+            language={block.language as string}
           />
           {selectionMode && (
             <div
@@ -132,7 +139,7 @@ export function ChatMessage({
     if (block.type === "numbered-list") {
       return (
         <div key={block.key} className="space-y-2">
-          {block.items.map((item: any, i: number) => (
+          {block.items?.map((item: SelectedBlock, i: number) => (
             <motion.div
               key={i}
               onClick={() => handleBlockSelect(item.content, "list-item")}
@@ -322,7 +329,9 @@ export function ChatMessage({
                   Thinking...
                 </motion.span>
               ) : (
-                formattedContent.map((block: any) => renderBlock(block))
+                formattedContent.map((block: SelectedBlock) =>
+                  renderBlock(block)
+                )
               )}
             </motion.div>
           ) : (

@@ -128,7 +128,7 @@ export default function TopicsPage() {
           topic.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
       if (filtered.length > 0) {
-        //@ts-ignore
+        //@ts-expect-error - Property 'category' does not exist on type '{}'
         acc[category] = filtered;
       }
       return acc;

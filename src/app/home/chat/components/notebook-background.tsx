@@ -5,9 +5,7 @@ interface NotebookBackgroundProps {
   messagesLength: number;
 }
 
-export function NotebookBackground({
-  messagesLength,
-}: NotebookBackgroundProps) {
+export function NotebookBackground({}: NotebookBackgroundProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {

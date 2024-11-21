@@ -19,7 +19,7 @@ export function QuestionSection() {
       </div>
       <div className="relative z-10 max-w-lg">
         <h2 className="text-2xl font-bold text-white mb-ss4">
-          Have a Question? I'm Here to Help!
+          Have a Question? I&apos;m Here to Help!
         </h2>
         <p className="text-gray-400 mb-6">
           Get instant help with any topic. Our AI tutor is available 24/7 to

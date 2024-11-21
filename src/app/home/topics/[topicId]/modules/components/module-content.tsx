@@ -48,7 +48,9 @@ export function ModuleContent({
 
   const moduleContent = getModuleContent(topicId, moduleId);
 
-  if (!moduleContent) {
+  console.log(moduleContent);
+
+  if (!moduleContent || topicId == "Computer Science") {
     return (
       <div className="text-center p-8">
         <h2 className="text-xl text-white mb-4">Module not found</h2>
@@ -151,7 +153,7 @@ export function ModuleContent({
     }
 
     try {
-      const chatId = await createChat({
+      const _chatId = await createChat({
         title: `${moduleContent.title} - Quiz Help`,
         uuid: crypto.randomUUID(),
         userId: user._id,
@@ -271,9 +273,9 @@ export function ModuleContent({
           onClose={() => setShowAiTutor(false)}
           question={currentSection.quiz?.question || ""}
           context={currentSection.content}
-          // @ts-ignore
+          // @ts-expect-error error message
           chatId={currentSection?.chatId}
-          // @ts-ignore
+          // @ts-expect-error error message
           messageId={currentSection?.messageId}
         />
       )}

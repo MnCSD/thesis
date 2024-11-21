@@ -2,23 +2,13 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  BookOpen,
-  Clock,
-  Target,
-  MessageSquare,
-} from "lucide-react";
-import Link from "next/link";
+import { BookOpen, Clock, Target } from "lucide-react";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
-import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
-import Image from "next/image";
-import Figure from "../images/teacher-3d.png";
 import { QuestionSection } from "./components/question-section";
 import { QuickActions } from "./components/quick-actions";
 
 export default function HomePage() {
-  const { data: user, isLoading } = useCurrentUser();
+  const { data: user } = useCurrentUser();
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">

@@ -2,20 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Code,
-  Calculator,
-  FlaskConical,
-  Atom,
-  Dna,
-  Globe,
-  BookOpen,
-  Music,
-  Palette,
-  Brain,
-  ChartBar,
-  GraduationCap,
-} from "lucide-react";
+import { Code, Calculator } from "lucide-react";
 
 const problemSets = {
   "Computer Science": {
@@ -102,9 +89,9 @@ export default function PracticeProblems() {
   };
 
   const getDifficulties = (categoryTitle: string) => {
-    // @ts-ignore
+    // @ts-expect-error error message
     if (problemSets[categoryTitle]) {
-      // @ts-ignore
+      // @ts-expect-error error message
       return Object.keys(problemSets[categoryTitle]);
     }
     return [];
@@ -181,7 +168,7 @@ export default function PracticeProblems() {
                     </p>
 
                     {selectedCategory === category &&
-                      // @ts-ignore
+                      // @ts-expect-error error message
                       problemSets[category.title] && (
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
@@ -190,7 +177,7 @@ export default function PracticeProblems() {
                         >
                           {!selectedDifficulty ? (
                             <div className="space-y-4">
-                              {/* @ts-ignore */}
+                              {/* @ts-expect-error error message */}
                               {getDifficulties(category.title).map(
                                 (difficulty) => (
                                   <motion.button
@@ -199,7 +186,7 @@ export default function PracticeProblems() {
                                     whileTap={{ scale: 0.98 }}
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      //   @ts-ignore
+                                      //   @ts-expect-error error message
                                       setSelectedDifficulty(difficulty);
                                     }}
                                     className="w-full bg-[#252525] text-white p-4 rounded-lg 
@@ -211,7 +198,7 @@ export default function PracticeProblems() {
                                     </span>
                                     <span className="text-sm text-[#55DC49] bg-[#55DC49]/10 px-2 py-1 rounded">
                                       {
-                                        // @ts-ignore
+                                        // @ts-expect-error error message
                                         problemSets[category.title][difficulty]
                                           .length
                                       }{" "}
@@ -237,10 +224,10 @@ export default function PracticeProblems() {
                                   Back to Difficulties
                                 </button>
                               </div>
-                              {/* @ts-ignore */}
+                              {/* @ts-expect-error error message */}
                               {problemSets[category.title][
                                 selectedDifficulty
-                                // @ts-ignore
+                                // @ts-expect-error error message
                               ].map((problem, index) => (
                                 <motion.div
                                   key={index}

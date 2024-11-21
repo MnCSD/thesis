@@ -73,7 +73,7 @@ export function ModuleCompletion({ onClose, stats }: ModuleCompletionProps) {
               transition={{ delay: 0.4 }}
               className="text-gray-400 mb-8"
             >
-              You've successfully completed this module!
+              You&apos;ve successfully completed this module!
             </motion.p>
 
             <div className="grid grid-cols-3 gap-4 mb-8">

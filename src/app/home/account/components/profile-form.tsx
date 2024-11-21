@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Loader2,
-  Github,
-  Twitter,
-  Globe,
-  MapPin,
   Mail,
   User,
   BookOpen,
@@ -76,7 +71,7 @@ export function ProfileForm({ user, preferences }: ProfileFormProps) {
           onSuccess: () => {
             toast.success("Preferences updated successfully");
           },
-          onError: (error: any) => {
+          onError: (error: Error) => {
             toast.error("Failed to update preferences: " + error.message);
           },
         }

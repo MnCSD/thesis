@@ -1,4 +1,5 @@
 import Groq from "groq-sdk";
+import Error from "next/error";
 
 const groq = new Groq({
   apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
@@ -39,11 +40,9 @@ Provide a clear, comprehensive explanation that helps the student understand the
       completion.choices[0]?.message?.content ||
       "I apologize, but I'm having trouble generating an explanation. Please try again."
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Groq API Error:", error);
-    if (error?.status === 429) {
-      return "I'm currently handling too many requests. Please wait a moment and try again.";
-    }
+
     return "I apologize, but I'm having trouble generating an explanation. Please try again.";
   }
 }

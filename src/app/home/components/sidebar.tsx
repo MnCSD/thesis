@@ -165,7 +165,7 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 ml-7 group-hover:text-gray-400 transition-colors duration-300">
                         <Clock className="w-3 h-3" />
                         <span>
-                          {/* @ts-ignore */}
+                          {/* @ts-expect-error timestamp */}
                           {format(new Date(chat.timestamp), "MMM d, h:mm a")}
                         </span>
                       </div>

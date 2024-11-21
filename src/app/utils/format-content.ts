@@ -14,7 +14,7 @@ export function formatContent(content: string): FormattedBlock[] {
   // Split content into parts based on code blocks
   const parts = content.split(/(```[\s\S]*?```)/);
 
-  //@ts-ignore
+  //@ts-expect-error
   return parts
     .map((part, index) => {
       // Check if this part is a code block

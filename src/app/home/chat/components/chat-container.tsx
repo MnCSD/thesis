@@ -75,7 +75,7 @@ export function ChatContainer({
         });
 
         // Generate and save AI response
-        // @ts-ignore
+        // @ts-expect-error msg is not a valid type
         const response = await generateTutorResponse(content, messages);
         const formattedContent = formatCodeBlocks(response.content);
 
@@ -90,7 +90,7 @@ export function ChatContainer({
       } catch (error) {
         console.error("Error generating response:", error);
         await sendMessage({
-          content: "I'm having a moment. Could you try asking again?",
+          content: "I&apos;m having a moment. Could you try asking again?",
           chatId: chat._id,
           sender: "ai",
         });

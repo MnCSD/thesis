@@ -1,5 +1,4 @@
 import { CircleUser } from "lucide-react";
-import Image from "next/image";
 import { Doc } from "../../../../../convex/_generated/dataModel";
 
 interface ProfileHeaderProps {

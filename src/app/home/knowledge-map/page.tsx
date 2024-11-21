@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Brain } from "lucide-react";
 import { LearningPath } from "./components/learning-path";
 import { useModuleProgress } from "@/features/modules/use-module-progress";
-import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { useGetPreferences } from "@/features/preferences/use-get-preferences";
 import { SubjectType } from "@/features/auth/types";
 
@@ -77,7 +75,6 @@ export default function KnowledgeMap() {
     //introductionProgress
     if (introductionProgress?.progress?.progress) {
       introductionProgressPercentage = Math.round(
-        // @ts-ignore
         (introductionProgress?.progress?.progress / 100) * 10
       );
     }
@@ -85,7 +82,6 @@ export default function KnowledgeMap() {
     // coreProgress
     if (coreProgress?.progress?.progress) {
       coreProgressPercentage = Math.round(
-        // @ts-ignore
         (coreProgress?.progress?.progress / 100) * 10
       );
     }
@@ -93,7 +89,6 @@ export default function KnowledgeMap() {
     // advancedProgress
     if (advancedProgress?.progress?.progress) {
       advancedProgressPercentage = Math.round(
-        // @ts-ignore
         (advancedProgress?.progress?.progress / 100) * 10
       );
     }
@@ -101,7 +96,6 @@ export default function KnowledgeMap() {
     // practicalProgress
     if (practicalProgress?.progress?.progress) {
       practicalProgressPercentage = Math.round(
-        // @ts-ignore
         (practicalProgress?.progress?.progress / 100) * 10
       );
     }

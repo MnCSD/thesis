@@ -6,7 +6,7 @@ interface SelectionOverlayProps {
   onClear: () => void;
 }
 
-export function SelectionOverlay({ text, onClear }: SelectionOverlayProps) {
+export function SelectionOverlay({ onClear }: SelectionOverlayProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }}

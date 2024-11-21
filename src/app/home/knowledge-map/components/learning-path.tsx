@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { LearningNode } from "./learning-node";
 
 interface Module {
@@ -29,7 +28,6 @@ export function LearningPath({ modules, topicId }: LearningPathProps) {
             module={module}
             topicId={topicId}
             index={index}
-            total={modules.length}
           />
         ))}
       </div>

@@ -1,7 +1,5 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, SortDesc } from "lucide-react";
 import Link from "next/link";
@@ -14,7 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
 import { NoteCard } from "./components/note-card";
 import { EmptyState } from "./components/empty-state";
 import { SearchBar } from "./components/search-bar";
@@ -37,7 +34,7 @@ export default function StudyNotes() {
   const { data: user } = useCurrentUser();
   const { useGetNotesByUser } = useNotes();
 
-  // @ts-ignore
+  // @ts-expect-error - notes is not defined
   const { notes, isLoading } = useGetNotesByUser(user ? user._id : "skip");
 
   useEffect(() => {
@@ -175,7 +172,7 @@ export default function StudyNotes() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredAndSortedNotes.map(
-                // @ts-ignore
+                // @ts-expect-error (function is not defined)
                 (
                   note: {
                     _id: GenericId<"notes">;

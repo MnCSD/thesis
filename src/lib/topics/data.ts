@@ -1,17 +1,3 @@
-import {
-  Brain,
-  Code,
-  Calculator,
-  FlaskConical,
-  Globe,
-  BookOpen,
-  Music,
-  Palette,
-  ChartBar,
-  GraduationCap,
-  Atom,
-  Dna,
-} from "lucide-react";
 import { computerScienceModules } from "./modules/computer-science";
 import { mathematicsModules } from "./modules/mathematics";
 

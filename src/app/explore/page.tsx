@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useAuthActions } from "@convex-dev/auth/react";
 import React, { useState } from "react";
 import Mathematics from "../images/Matemathic.svg";
 import Physics from "../images/Research.svg";
@@ -17,7 +16,6 @@ import {
   ThermometerSnowflake,
   ThermometerSun,
   Thermometer,
-  ArrowRight,
   ArrowLeft,
 } from "lucide-react";
 import {
@@ -30,7 +28,7 @@ import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { useCreatePreference } from "@/features/preferences/use-create-preference";
 import { useGetPreferences } from "@/features/preferences/use-get-preferences";
 
-export const subjects: { name: SubjectType; image?: any }[] = [
+export const subjects: { name: SubjectType; image?: string }[] = [
   { name: "Mathematics", image: Mathematics },
   { name: "Science", image: Physics },
   { name: "Computer Science", image: Board },

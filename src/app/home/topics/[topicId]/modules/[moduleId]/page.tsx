@@ -64,10 +64,14 @@ export default function ModuleDetail({
     progress?.progress?.status,
   ]);
 
-  if (!moduleContent) {
+  console.log(topicId);
+
+  if (topicId !== "Computer Science") {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#55DC49]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#55DC49]">
+          Hey
+        </div>
       </div>
     );
   }
@@ -116,39 +120,41 @@ export default function ModuleDetail({
         timeSpent={progress?.progress?.timeSpent || 0}
         onComplete={handleModuleComplete}
       />
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            {isCompleted ? (
-              <ModuleReview
+      {topicId === "Computer Science" && (
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              {isCompleted ? (
+                <ModuleReview
+                  moduleId={moduleId}
+                  // @ts-ignore
+                  stats={progress?.stats}
+                  timeSpent={progress?.progress?.timeSpent || 0}
+                  completedAt={progress?.progress?.completedAt}
+                />
+              ) : (
+                <ModuleContent
+                  currentSlide={currentSlide}
+                  setCurrentSlide={setCurrentSlide}
+                  moduleId={moduleId}
+                  topicId={topicId}
+                  onQuizSubmit={handleQuizSubmit}
+                />
+              )}
+            </div>
+            <div className="lg:col-span-1">
+              <ModuleSidebar
                 moduleId={moduleId}
+                status={moduleStatus}
                 // @ts-ignore
                 stats={progress?.stats}
-                timeSpent={progress?.progress?.timeSpent || 0}
-                completedAt={progress?.progress?.completedAt}
+                // @ts-ignore
+                progress={progress?.progress}
               />
-            ) : (
-              <ModuleContent
-                currentSlide={currentSlide}
-                setCurrentSlide={setCurrentSlide}
-                moduleId={moduleId}
-                topicId={topicId}
-                onQuizSubmit={handleQuizSubmit}
-              />
-            )}
-          </div>
-          <div className="lg:col-span-1">
-            <ModuleSidebar
-              moduleId={moduleId}
-              status={moduleStatus}
-              // @ts-ignore
-              stats={progress?.stats}
-              // @ts-ignore
-              progress={progress?.progress}
-            />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 }

@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  BookOpen,
   MessageSquare,
   Download,
   FileText,
@@ -50,12 +49,7 @@ const resources = [
   },
 ];
 
-export function ModuleSidebar({
-  moduleId,
-  status,
-  stats,
-  progress,
-}: ModuleSidebarProps) {
+export function ModuleSidebar({ status, stats, progress }: ModuleSidebarProps) {
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -78,7 +72,9 @@ export function ModuleSidebar({
               <h3 className="text-xl font-semibold text-white">
                 Excellent Work!
               </h3>
-              <p className="text-gray-400 mt-2">You've mastered this module</p>
+              <p className="text-gray-400 mt-2">
+                You&apos;ve mastered this module
+              </p>
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 bg-[#232323]/80 rounded-lg">
@@ -121,7 +117,7 @@ export function ModuleSidebar({
                   <span className="text-gray-300">Perfect Score</span>
                 </div>
               )}
-              {/* @ts-ignore */}
+              {/* @ts-expect-error */}
               {stats?.bestStreak >= 3 && (
                 <div className="flex items-center gap-3">
                   <Award className="w-5 h-5 text-purple-400" />

@@ -67,10 +67,7 @@ Respond naturally and helpfully. If it's a greeting, be casual. If it's a questi
       completion.choices[0]?.message?.content ||
       "Could you rephrase that? I want to make sure I understand correctly."
     );
-  } catch (error: any) {
-    if (error?.status === 429) {
-      return "I'm a bit overwhelmed right now. Could you wait a moment and try again?";
-    }
+  } catch (error: unknown) {
     console.error("Groq API Error:", error);
     return "I'm having trouble thinking clearly. Could you try asking again?";
   }

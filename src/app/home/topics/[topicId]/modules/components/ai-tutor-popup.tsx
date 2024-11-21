@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getQuestionExplanation } from "@/app/utils/ai-tutor";
 import { formatContent } from "@/app/utils/format-content";
 import { toast } from "sonner";
-import { textVariants } from "@/app/home/chat/components/chat-message";
+import {
+  SelectedBlock,
+  textVariants,
+} from "@/app/home/chat/components/chat-message";
 
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
@@ -134,13 +137,13 @@ export function AiTutorPopup({
                           Thinking...
                         </motion.span>
                       ) : (
-                        formattedContent.map((block: any) => {
+                        formattedContent.map((block: SelectedBlock) => {
                           if (block.type === "code") {
                             return (
                               <CodeBlock
                                 key={block.key}
                                 content={block.content}
-                                language={block.language}
+                                language={block.language as string}
                               />
                             );
                           }
@@ -148,23 +151,25 @@ export function AiTutorPopup({
                           if (block.type === "numbered-list") {
                             return (
                               <div key={block.key} className="space-y-2">
-                                {block.items.map((item: any, i: number) => (
-                                  <motion.div
-                                    key={i}
-                                    custom={i}
-                                    initial="hidden"
-                                    animate="visible"
-                                    variants={textVariants}
-                                    className="flex gap-2"
-                                  >
-                                    <span className="text-[#E8E8E8] opacity-90 chalk-dust">
-                                      {item.number}
-                                    </span>
-                                    <span className="text-[#E8E8E8] opacity-90 chalk-dust">
-                                      {item.content}
-                                    </span>
-                                  </motion.div>
-                                ))}
+                                {block?.items?.map(
+                                  (item: SelectedBlock, i: number) => (
+                                    <motion.div
+                                      key={i}
+                                      custom={i}
+                                      initial="hidden"
+                                      animate="visible"
+                                      variants={textVariants}
+                                      className="flex gap-2"
+                                    >
+                                      <span className="text-[#E8E8E8] opacity-90 chalk-dust">
+                                        {item.number}
+                                      </span>
+                                      <span className="text-[#E8E8E8] opacity-90 chalk-dust">
+                                        {item.content}
+                                      </span>
+                                    </motion.div>
+                                  )
+                                )}
                               </div>
                             );
                           }

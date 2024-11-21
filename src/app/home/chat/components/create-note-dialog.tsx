@@ -61,7 +61,7 @@ export function CreateNoteDialog({
 
       toast.success("Note created successfully!");
       onClose();
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to create note");
     }
   };

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   BookOpen,
@@ -10,9 +10,6 @@ import {
   Play,
   Brain,
   Star,
-  Users,
-  MessageSquare,
-  Share2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
@@ -87,15 +84,8 @@ export default function TopicDetail({
     topicId
   );
 
-  console.log({
-    introductionProgress,
-    coreProgress,
-    advancedProgress,
-    practicalProgress,
-  });
-
   // Initialize modules with sections and progress tracking
-  const [modules, setModules] = useState<Module[]>([
+  const [modules, _setModules] = useState<Module[]>([
     {
       id: "1",
       title: "Introduction to the Basics",
@@ -175,7 +165,6 @@ export default function TopicDetail({
     //introductionProgress
     if (introductionProgress?.progress?.progress) {
       introductionProgressPercentage = Math.round(
-        // @ts-ignore
         (introductionProgress?.progress?.progress / 100) * 10
       );
     }
@@ -183,7 +172,6 @@ export default function TopicDetail({
     // coreProgress
     if (coreProgress?.progress?.progress) {
       coreProgressPercentage = Math.round(
-        // @ts-ignore
         (coreProgress?.progress?.progress / 100) * 10
       );
     }
@@ -191,7 +179,6 @@ export default function TopicDetail({
     // advancedProgress
     if (advancedProgress?.progress?.progress) {
       advancedProgressPercentage = Math.round(
-        // @ts-ignore
         (advancedProgress?.progress?.progress / 100) * 10
       );
     }
@@ -199,7 +186,6 @@ export default function TopicDetail({
     // practicalProgress
     if (practicalProgress?.progress?.progress) {
       practicalProgressPercentage = Math.round(
-        // @ts-ignore
         (practicalProgress?.progress?.progress / 100) * 10
       );
     }
@@ -248,7 +234,6 @@ export default function TopicDetail({
     return `${hours}h ${remainingMins}m`;
   };
 
-  const totalProgress = calculateTotalProgress();
   const totalTimeSpent = calculateTotalTimeSpent();
   const completedModules = calculateCompletedModules();
   const totalPercentage = calculateTotalProgress();
@@ -270,27 +255,6 @@ export default function TopicDetail({
             <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
             Back to Topics
           </motion.button>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex gap-3"
-          >
-            <Button
-              variant="outline"
-              size="icon"
-              className="border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10"
-            >
-              <MessageSquare className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10"
-            >
-              <Share2 className="w-4 h-4" />
-            </Button>
-          </motion.div>
         </motion.div>
 
         <motion.div
@@ -340,27 +304,28 @@ export default function TopicDetail({
                   </div>
                 </motion.div>
 
-                <motion.div className="space-y-6" variants={stagger}>
-                  {modules.map((module, index) => (
-                    <motion.div
-                      key={module.id}
-                      variants={fadeIn}
-                      onHoverStart={() => setActiveModule(index)}
-                      onHoverEnd={() => setActiveModule(null)}
-                      className="relative group"
-                      onClick={() =>
-                        handleModuleClick(module.id, module.status)
-                      }
-                    >
-                      <Card
-                        className={`bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-6 transition-all duration-300
+                {topicId === "Computer Science" || topicId === "Mathematics" ? (
+                  <motion.div className="space-y-6" variants={stagger}>
+                    {modules.map((module, index) => (
+                      <motion.div
+                        key={module.id}
+                        variants={fadeIn}
+                        onHoverStart={() => setActiveModule(index)}
+                        onHoverEnd={() => setActiveModule(null)}
+                        className="relative group"
+                        onClick={() =>
+                          handleModuleClick(module.id, module.status)
+                        }
+                      >
+                        <Card
+                          className={`bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-6 transition-all duration-300
                         ${activeModule === index ? "border-[#55DC49]/30 shadow-lg shadow-[#55DC49]/5" : "hover:border-[#55DC49]/20"}
                         ${module.status !== "locked" ? "cursor-pointer" : "cursor-not-allowed"}`}
-                      >
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-4">
-                            <div
-                              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-4">
+                              <div
+                                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300
                               ${
                                 module.status === "completed"
                                   ? "bg-[#55DC49]/20"
@@ -368,204 +333,221 @@ export default function TopicDetail({
                                     ? "bg-yellow-500/20"
                                     : "bg-gray-500/20"
                               }`}
-                            >
-                              {module.status === "completed" ? (
-                                <Trophy className="w-6 h-6 text-[#55DC49]" />
-                              ) : module.status === "in-progress" ? (
-                                <Play className="w-6 h-6 text-yellow-500" />
-                              ) : (
-                                <Brain className="w-6 h-6 text-gray-500" />
-                              )}
-                            </div>
-                            <div>
-                              <h3 className="text-white font-semibold mb-1">
-                                {module.title}
-                              </h3>
-                              <p className="text-gray-400 text-sm">
-                                {module.description}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="text-right mr-4">
-                              <div className="flex items-center justify-end gap-1 text-[#55DC49]">
-                                <Star className="w-4 h-4 fill-current" />
-                                <span className="text-sm font-medium">
-                                  {module.rating}
-                                </span>
+                              >
+                                {module.status === "completed" ? (
+                                  <Trophy className="w-6 h-6 text-[#55DC49]" />
+                                ) : module.status === "in-progress" ? (
+                                  <Play className="w-6 h-6 text-yellow-500" />
+                                ) : (
+                                  <Brain className="w-6 h-6 text-gray-500" />
+                                )}
+                              </div>
+                              <div>
+                                <h3 className="text-white font-semibold mb-1">
+                                  {module.title}
+                                </h3>
+                                <p className="text-gray-400 text-sm">
+                                  {module.description}
+                                </p>
                               </div>
                             </div>
-                            <Button
-                              variant="outline"
-                              className={`${module.status === "locked" ? "opacity-50 cursor-not-allowed" : ""} 
+                            <div className="flex items-center gap-4">
+                              <div className="text-right mr-4">
+                                <div className="flex items-center justify-end gap-1 text-[#55DC49]">
+                                  <Star className="w-4 h-4 fill-current" />
+                                  <span className="text-sm font-medium">
+                                    {module.rating}
+                                  </span>
+                                </div>
+                              </div>
+                              <Button
+                                variant="outline"
+                                className={`${module.status === "locked" ? "opacity-50 cursor-not-allowed" : ""} 
                                 border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10 min-w-[100px] hover:text-white
                                 transition-all duration-300`}
-                              disabled={module.status === "locked"}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleModuleClick(module.id, module.status);
-                              }}
-                            >
-                              {index === 0 &&
-                                introductionProgress?.progress?.status ===
-                                  "completed" &&
-                                "Review"}
-                              {index === 0 &&
-                                introductionProgress?.progress?.status ===
-                                  "in_progress" &&
-                                "Continue"}
-                              {index === 0 &&
-                                introductionProgress?.progress?.status ===
-                                  "not_started" &&
-                                "Start"}
-                              {index === 1 &&
-                                coreProgress?.progress?.status ===
-                                  "completed" &&
-                                "Review"}
-                              {index === 1 &&
-                                coreProgress?.progress?.status ===
-                                  "in_progress" &&
-                                "Continue"}
-                              {(index === 1 &&
-                                coreProgress?.progress?.status ===
-                                  "not_started") ||
-                                (!coreProgress?.progress &&
-                                  index === 1 &&
-                                  "Start")}
-                              {index === 2 &&
-                                advancedProgress?.progress?.status ===
-                                  "completed" &&
-                                "Review"}
-                              {index === 2 &&
-                                advancedProgress?.progress?.status ===
-                                  "in_progress" &&
-                                "Continue"}
-                              {(index === 2 &&
-                                advancedProgress?.progress?.status ===
-                                  "not_started") ||
-                                (!advancedProgress?.progress &&
-                                  index === 2 &&
-                                  "Start")}
-                              {index === 3 &&
-                                practicalProgress?.progress?.status ===
-                                  "completed" &&
-                                "Review"}
-                              {index === 3 &&
-                                practicalProgress?.progress?.status ===
-                                  "in_progress" &&
-                                "Continue"}
-                              {(index === 3 &&
-                                practicalProgress?.progress?.status ===
-                                  "not_started") ||
-                                (!practicalProgress?.progress &&
-                                  index === 3 &&
-                                  "Start")}
-                            </Button>
+                                disabled={module.status === "locked"}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleModuleClick(module.id, module.status);
+                                }}
+                              >
+                                {index === 0 &&
+                                  introductionProgress?.progress?.status ===
+                                    "completed" &&
+                                  "Review"}
+                                {index === 0 &&
+                                  introductionProgress?.progress?.status ===
+                                    "in_progress" &&
+                                  "Continue"}
+                                {index === 0 &&
+                                  introductionProgress?.progress?.status ===
+                                    "not_started" &&
+                                  "Start"}
+                                {index === 1 &&
+                                  coreProgress?.progress?.status ===
+                                    "completed" &&
+                                  "Review"}
+                                {index === 1 &&
+                                  coreProgress?.progress?.status ===
+                                    "in_progress" &&
+                                  "Continue"}
+                                {(index === 1 &&
+                                  coreProgress?.progress?.status ===
+                                    "not_started") ||
+                                  (!coreProgress?.progress &&
+                                    index === 1 &&
+                                    "Start")}
+                                {index === 2 &&
+                                  advancedProgress?.progress?.status ===
+                                    "completed" &&
+                                  "Review"}
+                                {index === 2 &&
+                                  advancedProgress?.progress?.status ===
+                                    "in_progress" &&
+                                  "Continue"}
+                                {(index === 2 &&
+                                  advancedProgress?.progress?.status ===
+                                    "not_started") ||
+                                  (!advancedProgress?.progress &&
+                                    index === 2 &&
+                                    "Start")}
+                                {index === 3 &&
+                                  practicalProgress?.progress?.status ===
+                                    "completed" &&
+                                  "Review"}
+                                {index === 3 &&
+                                  practicalProgress?.progress?.status ===
+                                    "in_progress" &&
+                                  "Continue"}
+                                {(index === 3 &&
+                                  practicalProgress?.progress?.status ===
+                                    "not_started") ||
+                                  (!practicalProgress?.progress &&
+                                    index === 3 &&
+                                    "Start")}
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                        <div className="relative">
-                          <Progress
-                            value={
-                              index == 0
-                                ? introductionProgress?.progress?.progress
-                                : index == 1
-                                  ? coreProgress?.progress?.progress
-                                  : index == 2
-                                    ? advancedProgress?.progress?.progress
-                                    : practicalProgress?.progress?.progress
-                            }
-                            className="h-2 bg-[#2A2A2A]"
-                          />
-                          <div className="flex justify-between mt-2">
-                            <span className="text-xs text-gray-400">
-                              1 of 10 sections
-                            </span>
-                            <span className="text-xs text-[#55DC49]">
-                              {index === 0 &&
-                                introductionProgress?.progress?.progress}
-                              {index === 1 &&
-                                // @ts-expect-error
-                                coreProgress?.progress?.progress | 0}
-                              {index === 2 &&
-                                // @ts-expect-error
-                                advancedProgress?.progress?.progress | 0}
-                              {index === 3 &&
-                                // @ts-expect-error
-                                practicalProgress?.progress?.progress | 0}
-                              %
-                            </span>
+                          <div className="relative">
+                            <Progress
+                              value={
+                                index == 0
+                                  ? introductionProgress?.progress?.progress
+                                  : index == 1
+                                    ? coreProgress?.progress?.progress
+                                    : index == 2
+                                      ? advancedProgress?.progress?.progress
+                                      : practicalProgress?.progress?.progress
+                              }
+                              className="h-2 bg-[#2A2A2A]"
+                            />
+                            <div className="flex justify-between mt-2">
+                              <span className="text-xs text-gray-400">
+                                1 of 10 sections
+                              </span>
+                              <span className="text-xs text-[#55DC49]">
+                                {index === 0 &&
+                                  introductionProgress?.progress?.progress}
+                                {index === 1 &&
+                                  // @ts-expect-error {introductionProgress?.progress?.progress
+                                  coreProgress?.progress?.progress | 0}
+                                {index === 2 &&
+                                  // @ts-expect-error {introductionProgress?.progress?.progress
+                                  advancedProgress?.progress?.progress | 0}
+                                {index === 3 &&
+                                  // @ts-expect-error {introductionProgress?.progress?.progress
+                                  practicalProgress?.progress?.progress | 0}
+                                %
+                              </span>
+                            </div>
                           </div>
-                        </div>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div className="space-y-6" variants={stagger}>
+                    <Card className="bg-[#1A1A1A]/50 backdrop-blur-xl border-[#55DC49]/10 p-8">
+                      <h2 className="text-2xl font-bold text-white mb-8">
+                        Coming Soon
+                      </h2>
+                      <p className="text-gray-400">
+                        We are working hard to bring you new content. Stay
+                        tuned!
+                      </p>
+                    </Card>
+                  </motion.div>
+                )}
+              </div>
+            </Card>
+          </motion.div>
+
+          {topicId === "Computer Science" || topicId === "Mathematics" ? (
+            <motion.div variants={slideIn} className="lg:col-span-1">
+              <Card className="bg-[#1A1A1A]/50 backdrop-blur-xl border-[#55DC49]/10 p-8 sticky top-8">
+                <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+                  Your Progress
+                  <div className="h-2 w-2 rounded-full bg-[#55DC49] animate-pulse" />
+                </h2>
+
+                <div className="space-y-8">
+                  <div>
+                    <div className="flex justify-between text-gray-400 mb-2">
+                      <span>Course Progress</span>
+                      <span className="text-[#55DC49]">{totalPercentage}%</span>
+                    </div>
+                    <div className="relative">
+                      <Progress
+                        value={totalPercentage}
+                        className="h-3 bg-[#2A2A2A]"
+                      />
+                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-[#55DC49] border-4 border-[#1A1A1A] shadow-lg" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-white font-semibold">Statistics</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30 transition-all duration-300">
+                        <Clock className="w-5 h-5 text-[#55DC49] mb-2" />
+                        <p className="text-gray-400 text-sm">Time Spent</p>
+                        <p className="text-white font-bold text-lg">
+                          {formatTime(totalTimeSpent)}
+                        </p>
                       </Card>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={slideIn} className="lg:col-span-1">
-            <Card className="bg-[#1A1A1A]/50 backdrop-blur-xl border-[#55DC49]/10 p-8 sticky top-8">
-              <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-                Your Progress
-                <div className="h-2 w-2 rounded-full bg-[#55DC49] animate-pulse" />
-              </h2>
-
-              <div className="space-y-8">
-                <div>
-                  <div className="flex justify-between text-gray-400 mb-2">
-                    <span>Course Progress</span>
-                    <span className="text-[#55DC49]">{totalPercentage}%</span>
+                      <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30 transition-all duration-300">
+                        <Trophy className="w-5 h-5 text-[#55DC49] mb-2" />
+                        <p className="text-gray-400 text-sm">Completed</p>
+                        <p className="text-white font-bold text-lg">
+                          {completedModules}/{modules.length}
+                        </p>
+                      </Card>
+                    </div>
                   </div>
-                  <div className="relative">
-                    <Progress
-                      value={totalPercentage}
-                      className="h-3 bg-[#2A2A2A]"
-                    />
-                    <div className="absolute -right-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-[#55DC49] border-4 border-[#1A1A1A] shadow-lg" />
-                  </div>
-                </div>
 
-                <div className="space-y-4">
-                  <h3 className="text-white font-semibold">Statistics</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30 transition-all duration-300">
-                      <Clock className="w-5 h-5 text-[#55DC49] mb-2" />
-                      <p className="text-gray-400 text-sm">Time Spent</p>
-                      <p className="text-white font-bold text-lg">
-                        {formatTime(totalTimeSpent)}
-                      </p>
-                    </Card>
-                    <Card className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30 transition-all duration-300">
-                      <Trophy className="w-5 h-5 text-[#55DC49] mb-2" />
-                      <p className="text-gray-400 text-sm">Completed</p>
-                      <p className="text-white font-bold text-lg">
-                        {completedModules}/{modules.length}
-                      </p>
-                    </Card>
-                  </div>
-                </div>
-
-                <Button
-                  className="w-full bg-[#55DC49] hover:bg-[#3AA831] text-black font-semibold h-12 text-lg
+                  <Button
+                    className="w-full bg-[#55DC49] hover:bg-[#3AA831] text-black font-semibold h-12 text-lg
                     transition-all duration-300 hover:shadow-lg hover:shadow-[#55DC49]/20"
-                  onClick={() => {
-                    const inProgressModule = modules.find(
-                      (m) => m.status === "in-progress"
-                    );
-                    if (inProgressModule) {
-                      handleModuleClick(
-                        inProgressModule.id,
-                        inProgressModule.status
+                    onClick={() => {
+                      const inProgressModule = modules.find(
+                        (m) => m.status === "in-progress"
                       );
-                    }
-                  }}
-                >
-                  Continue Learning
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
+                      if (inProgressModule) {
+                        handleModuleClick(
+                          inProgressModule.id,
+                          inProgressModule.status
+                        );
+                      }
+                    }}
+                  >
+                    Continue Learning
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+          ) : (
+            <></>
+          )}
         </motion.div>
       </div>
     </div>

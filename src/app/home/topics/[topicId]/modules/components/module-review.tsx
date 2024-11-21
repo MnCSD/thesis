@@ -28,12 +28,7 @@ interface ModuleReviewProps {
   completedAt?: number;
 }
 
-export function ModuleReview({
-  moduleId,
-  stats,
-  timeSpent,
-  completedAt,
-}: ModuleReviewProps) {
+export function ModuleReview({ stats, timeSpent }: ModuleReviewProps) {
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -96,7 +91,7 @@ export function ModuleReview({
           Module Completed!
         </h2>
         <p className="text-gray-400 max-w-lg mx-auto">
-          Congratulations! You've completed this module with{" "}
+          Congratulations! You&apos;ve completed this module with{" "}
           {Math.round(stats.accuracy)}% accuracy.
         </p>
       </motion.div>

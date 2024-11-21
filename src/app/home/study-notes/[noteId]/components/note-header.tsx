@@ -11,7 +11,7 @@ interface NoteHeaderProps {
   onEdit: () => void;
 }
 
-export function NoteHeader({ noteId, onEdit }: NoteHeaderProps) {
+export function NoteHeader({ onEdit }: NoteHeaderProps) {
   return (
     <motion.div
       initial={{ y: -20, opacity: 0 }}

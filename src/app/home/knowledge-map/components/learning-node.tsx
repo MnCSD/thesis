@@ -13,13 +13,12 @@ interface LearningNodeProps {
   };
   topicId: string;
   index: number;
-  total: number;
 }
 
 export function LearningNode({
   module,
   index,
-  total,
+
   topicId,
 }: LearningNodeProps) {
   const controls = useAnimationControls();
@@ -33,13 +32,13 @@ export function LearningNode({
     });
   }, [module.progress, index, controls]);
 
-  const progressCircleVariants = {
-    initial: { pathLength: 0 },
-    animate: {
-      pathLength: module.progress / 100,
-      transition: { duration: 2, ease: "easeInOut", delay: index * 0.3 },
-    },
-  };
+  // const progressCircleVariants = {
+  //   initial: { pathLength: 0 },
+  //   animate: {
+  //     pathLength: module.progress / 100,
+  //     transition: { duration: 2, ease: "easeInOut", delay: index * 0.3 },
+  //   },
+  // };
 
   return (
     <motion.div
