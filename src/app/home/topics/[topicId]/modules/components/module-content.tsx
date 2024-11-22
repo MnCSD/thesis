@@ -70,7 +70,10 @@ export function ModuleContent({
     updateTimeAndProgress,
   ]);
 
-  if (!moduleContent || topicId == "Computer Science") {
+  if (
+    !moduleContent ||
+    (topicId !== "Computer Science" && topicId !== "Mathematics")
+  ) {
     return (
       <div className="text-center p-8">
         <h2 className="text-xl text-white mb-4">Module not found</h2>

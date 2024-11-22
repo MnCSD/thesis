@@ -108,7 +108,7 @@ export default function TopicDetail({
       title: "Core Concepts",
       duration: "25 mins",
       progress: 0,
-      status: "not_started",
+      status: "in-progress",
       students: 982,
       rating: 4.9,
       description:
@@ -125,7 +125,7 @@ export default function TopicDetail({
       title: "Advanced Techniques",
       duration: "30 mins",
       progress: 0,
-      status: "locked",
+      status: "in-progress",
       students: 756,
       rating: 4.7,
       description: "Master complex problem-solving and advanced methodologies.",
@@ -141,7 +141,7 @@ export default function TopicDetail({
       title: "Practical Applications",
       duration: "45 mins",
       progress: 0,
-      status: "locked",
+      status: "in-progress",
       students: 543,
       rating: 4.6,
       description:
@@ -364,7 +364,7 @@ export default function TopicDetail({
                                 variant="outline"
                                 className={`
                                 border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10 min-w-[100px] hover:text-white
-                                transition-all duration-300`}
+                                transition-all duration-300 bg-red-500`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleModuleClick(module.id, module.status);
