@@ -28,7 +28,7 @@ export function NoteHeader({ onEdit }: NoteHeaderProps) {
         </Button>
       </Link>
       <div className="flex gap-2">
-        <Button
+        {/* <Button
           variant="ghost"
           className="text-white hover:bg-white/10 hover:text-white"
           onClick={onEdit}
@@ -43,7 +43,7 @@ export function NoteHeader({ onEdit }: NoteHeaderProps) {
         >
           <Trash2 className="w-4 h-4 mr-2" />
           Delete
-        </Button>
+        </Button> */}
       </div>
     </motion.div>
   );

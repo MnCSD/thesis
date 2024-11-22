@@ -7,14 +7,14 @@ import { formatTime } from "../../topics/[topicId]/modules/components/module-rev
 interface SubjectCardProps {
   name: string;
   progress: number;
-  hours: number;
+  timeInSeconds: number;
   index: number;
 }
 
 export function SubjectCard({
   name,
   progress,
-  hours,
+  timeInSeconds,
   index,
 }: SubjectCardProps) {
   return (
@@ -41,7 +41,7 @@ export function SubjectCard({
           </Progress>
 
           <div className="flex justify-between text-sm text-gray-400">
-            <span>{formatTime(hours)}</span>
+            <span>{formatTime(timeInSeconds)}</span>
             <span>{Math.round((progress / 100) * 40)} / 40 lessons</span>
           </div>
         </div>

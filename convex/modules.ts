@@ -183,3 +183,62 @@ export const completeModule = mutation({
     }
   },
 });
+
+export const getUserTopics = query({
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    // Get all distinct topics the user has started
+    const userProgress = await ctx.db
+      .query("moduleProgress")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    // Get unique topics
+    const uniqueTopics = [...new Set(userProgress.map((p) => p.topicId))];
+
+    // Get progress for each topic
+    const topicsWithProgress = await Promise.all(
+      uniqueTopics.map(async (topicId) => {
+        const topicProgress = userProgress.filter((p) => p.topicId === topicId);
+
+        // Calculate total hours (convert to hours with 2 decimal places)
+        const totalSeconds = topicProgress.reduce(
+          (acc, curr) => acc + (curr.timeSpent || 0),
+          0
+        );
+
+        // Calculate average progress
+        const totalProgress = topicProgress.reduce(
+          (acc, curr) => acc + (curr.progress || 0),
+          0
+        );
+        const averageProgress = Math.round(
+          totalProgress / topicProgress.length
+        );
+
+        // Map topic IDs to names
+        const topicNames: Record<string, string> = {
+          mathematics: "Mathematics",
+          computer_science: "Computer Science",
+          physics: "Physics",
+          chemistry: "Chemistry",
+          biology: "Biology",
+        };
+
+        return {
+          topicId,
+          name: topicNames[topicId] || topicId,
+          progress: averageProgress,
+          timeSpent: totalSeconds,
+        };
+      })
+    );
+
+    return topicsWithProgress;
+  },
+});
