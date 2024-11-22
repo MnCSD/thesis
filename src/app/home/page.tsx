@@ -22,7 +22,7 @@ export default function HomePage() {
       </section>
 
       <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="p-6 bg-white/5 border-0">
+        {/* <Card className="p-6 bg-white/5 border-0">
           <div className="flex items-start justify-between">
             <div className="h-12 w-12 rounded-full bg-[#55DC49]/10 flex items-center justify-center">
               <Clock className="h-6 w-6 text-[#55DC49]" />
@@ -38,9 +38,9 @@ export default function HomePage() {
           <Button className="w-full mt-4 bg-[#55DC49] hover:bg-[#4bc73f]">
             Resume Learning
           </Button>
-        </Card>
+        </Card> */}
 
-        <Card className="p-6 bg-white/5 border-0">
+        {/* <Card className="p-6 bg-white/5 border-0">
           <div className="flex items-start justify-between">
             <div className="h-12 w-12 rounded-full bg-[#55DC49]/10 flex items-center justify-center">
               <Target className="h-6 w-6 text-[#55DC49]" />
@@ -59,7 +59,7 @@ export default function HomePage() {
               style={{ width: "80%" }}
             ></div>
           </div>
-        </Card>
+        </Card> */}
 
         <Card className="p-6 bg-white/5 border-0">
           <div className="flex items-start justify-between">

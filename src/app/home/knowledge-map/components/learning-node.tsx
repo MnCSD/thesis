@@ -57,10 +57,10 @@ export function LearningNode({
         <div
           className={`
           w-36 h-36 rounded-full bg-[#55DC49]/5 border-2
-          flex items-center justify-center relative overflow-hidden
+          flex items-center justify-center relative overflow-hidden cursor-pointer
           ${module.status === "completed" ? "border-[#55DC49]" : ""}
           ${module.status === "in_progress" ? "border-[#55DC49]/50 animate-pulse" : ""}
-          ${module.status === "locked" ? "border-white/20" : ""}
+
         `}
         >
           {/* Circular progress */}

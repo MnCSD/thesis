@@ -126,16 +126,16 @@ export default function KnowledgeMap() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-[#55DC49] to-[#55DC49]/70 text-transparent bg-clip-text">
+            <h1 className="md:text-5xl text-3xl font-bold mb-2 bg-gradient-to-r from-[#55DC49] to-[#55DC49]/70 text-transparent bg-clip-text">
               Your Learning Journey
             </h1>
-            <p className="text-xl text-white/60">
+            <p className="text-xl text-white/60 hidden md:block">
               Master Computer Science step by step
             </p>
           </div>
           <div className="flex items-center gap-2 bg-[#55DC49]/10 px-6 py-3 rounded-2xl border border-[#55DC49]/20">
             <Brain className="w-6 h-6 text-[#55DC49]" />
-            <span className="text-xl font-semibold">
+            <span className="md:text-xl font-semibold text-sm">
               {totalPercentage}% Complete
             </span>
           </div>

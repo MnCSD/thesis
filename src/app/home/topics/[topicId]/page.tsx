@@ -325,7 +325,7 @@ export default function TopicDetail({
                           <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-4">
                               <div
-                                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300
+                                className={`hidden md:flex w-12 h-12 rounded-xl items-center justify-center transition-colors duration-300
                               ${
                                 module.status === "completed"
                                   ? "bg-[#55DC49]/20"
@@ -351,20 +351,20 @@ export default function TopicDetail({
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-4 md:flex-row flex-col">
                               <div className="text-right mr-4">
-                                <div className="flex items-center justify-end gap-1 text-[#55DC49]">
+                                {/* <div className="flex items-center justify-end gap-1 text-[#55DC49]">
                                   <Star className="w-4 h-4 fill-current" />
                                   <span className="text-sm font-medium">
                                     {module.rating}
                                   </span>
-                                </div>
+                                </div> */}
                               </div>
                               <Button
                                 variant="outline"
                                 className={`
                                 border-[#55DC49]/30 hover:border-[#55DC49] hover:bg-[#55DC49]/10 min-w-[100px] hover:text-white
-                                transition-all duration-300 bg-red-500`}
+                                transition-all duration-300`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleModuleClick(module.id, module.status);
