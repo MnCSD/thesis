@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Star } from "lucide-react";
+import { formatTime } from "../../topics/[topicId]/modules/components/module-review";
 
 interface SubjectCardProps {
   name: string;
   progress: number;
   hours: number;
-  streak: number;
   index: number;
 }
 
@@ -15,7 +15,6 @@ export function SubjectCard({
   name,
   progress,
   hours,
-  streak,
   index,
 }: SubjectCardProps) {
   return (
@@ -27,10 +26,6 @@ export function SubjectCard({
       <Card className="p-6 bg-white/5 border-0">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">{name}</h3>
-          <div className="flex items-center space-x-2">
-            <Star className="h-4 w-4 text-[#55DC49]" />
-            <span className="text-sm text-gray-400">{streak} day streak</span>
-          </div>
         </div>
 
         <div className="space-y-4">
@@ -46,7 +41,7 @@ export function SubjectCard({
           </Progress>
 
           <div className="flex justify-between text-sm text-gray-400">
-            <span>{hours} hours spent</span>
+            <span>{formatTime(hours)}</span>
             <span>{Math.round((progress / 100) * 40)} / 40 lessons</span>
           </div>
         </div>

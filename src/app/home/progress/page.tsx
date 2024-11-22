@@ -5,15 +5,106 @@ import { Trophy, Clock, TrendingUp } from "lucide-react";
 import { StatsCard } from "./components/stats-card";
 import { SubjectCard } from "./components/subject-card";
 import { ActivityCard } from "./components/activity-card";
-import { GoalsCard } from "./components/goals-card";
-
-const subjects = [
-  { name: "Mathematics", progress: 85, hours: 24, streak: 7 },
-  { name: "Physics", progress: 65, hours: 18, streak: 4 },
-  { name: "Chemistry", progress: 72, hours: 20, streak: 5 },
-];
+import { useModuleProgress } from "@/features/modules/use-module-progress";
+import { useGetPreferences } from "@/features/preferences/use-get-preferences";
+import { SubjectType } from "@/features/auth/types";
+import { formatTime } from "../topics/[topicId]/modules/components/module-review";
 
 export default function ProgressPage() {
+  const { data: preferences } = useGetPreferences();
+  const topicId =
+    preferences?.[0]?.subject || (undefined as unknown as SubjectType);
+
+  const { progress: introductionProgress } = useModuleProgress(
+    "Introduction to the Basics",
+    topicId
+  );
+
+  const { progress: coreProgress } = useModuleProgress(
+    "Core Concepts",
+    topicId
+  );
+
+  const { progress: advancedProgress } = useModuleProgress(
+    "Advanced Techniques",
+    topicId
+  );
+
+  const { progress: practicalProgress } = useModuleProgress(
+    "Practical Applications",
+    topicId
+  );
+
+  // Calculate total progress
+  const calculateTotalProgress = () => {
+    let introductionProgressPercentage: number = 0;
+    let coreProgressPercentage: number = 0;
+    let advancedProgressPercentage: number = 0;
+    let practicalProgressPercentage: number = 0;
+
+    if (introductionProgress?.progress?.progress) {
+      introductionProgressPercentage = Math.round(
+        (introductionProgress?.progress?.progress / 100) * 10
+      );
+    }
+
+    if (coreProgress?.progress?.progress) {
+      coreProgressPercentage = Math.round(
+        (coreProgress?.progress?.progress / 100) * 10
+      );
+    }
+
+    if (advancedProgress?.progress?.progress) {
+      advancedProgressPercentage = Math.round(
+        (advancedProgress?.progress?.progress / 100) * 10
+      );
+    }
+
+    if (practicalProgress?.progress?.progress) {
+      practicalProgressPercentage = Math.round(
+        (practicalProgress?.progress?.progress / 100) * 10
+      );
+    }
+
+    const totalProgressNumber =
+      introductionProgressPercentage +
+      Number(coreProgressPercentage) +
+      Number(advancedProgressPercentage) +
+      Number(practicalProgressPercentage);
+
+    const total = totalProgressNumber / 40;
+
+    if (total < 0.1) {
+      return 1;
+    }
+
+    return Math.round(total * 100);
+  };
+
+  const totalProgress = calculateTotalProgress();
+
+  // Calculate total hours
+  const calculateTotalHours = () => {
+    let totalHours = 0;
+
+    if (introductionProgress?.progress?.timeSpent) {
+      totalHours += introductionProgress.progress.timeSpent;
+    }
+    if (coreProgress?.progress?.timeSpent) {
+      totalHours += coreProgress.progress.timeSpent;
+    }
+    if (advancedProgress?.progress?.timeSpent) {
+      totalHours += advancedProgress.progress.timeSpent;
+    }
+    if (practicalProgress?.progress?.timeSpent) {
+      totalHours += practicalProgress.progress.timeSpent;
+    }
+
+    return totalHours;
+  };
+
+  const totalHours = calculateTotalHours();
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       <motion.div
@@ -43,9 +134,9 @@ export default function ProgressPage() {
         >
           <StatsCard
             icon={Trophy}
-            value="89%"
+            value={`${totalProgress}%`}
             title="Overall Progress"
-            subtitle="Excellent performance!"
+            subtitle="Keep going!"
           />
         </motion.div>
 
@@ -56,22 +147,9 @@ export default function ProgressPage() {
         >
           <StatsCard
             icon={Clock}
-            value="62h"
+            value={formatTime(totalHours)}
             title="Total Time"
             subtitle="This month"
-          />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <StatsCard
-            icon={TrendingUp}
-            value="5"
-            title="Day Streak"
-            subtitle="Keep it up!"
           />
         </motion.div>
       </motion.div>
@@ -84,19 +162,31 @@ export default function ProgressPage() {
       >
         <h2 className="text-2xl font-bold text-white">Subject Progress</h2>
 
-        {subjects.map((subject, index) => (
-          <SubjectCard key={subject.name} {...subject} index={index} />
-        ))}
+        {preferences?.map((preference, index) => {
+          const progress = {
+            name: preference.subject,
+            progress: totalProgress,
+            hours: totalHours,
+          };
+          return (
+            <SubjectCard
+              key={preference.subject}
+              progress={totalProgress}
+              name={topicId}
+              hours={totalHours}
+              index={index}
+            />
+          );
+        })}
       </motion.div>
 
       <motion.div
-        className="grid md:grid-cols-2 gap-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        className="col-span-2"
       >
         <ActivityCard />
-        <GoalsCard />
       </motion.div>
     </div>
   );
