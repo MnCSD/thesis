@@ -31,7 +31,7 @@ export default function DashboardLayout({
           variant="ghost"
           size="icon"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="w-10 h-10 text-white hover:bg-[#55DC49]/10 hover:text-whites"
+          className="w-10 h-10 text-white bg-[#55DC49] hover:text-white"
         >
           <Menu className="w-[30px!important] h-[30px!important]" />
         </Button>
