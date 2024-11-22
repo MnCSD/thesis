@@ -65,13 +65,17 @@ export function ActivityCard() {
           </p>
         </div>
 
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-7 gap-4">
           {lastSevenDays.map((date, i) => {
             const isActive = wasActiveDayAt(date);
             const dayName = format(date, "EEE");
+            const dateStr = format(date, "MMM d");
             return (
               <div key={i} className="flex flex-col items-center space-y-2">
-                <span className="text-xs text-gray-400">{dayName}</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-xs text-gray-400">{dayName}</span>
+                  <span className="text-xs text-gray-400">{dateStr}</span>
+                </div>
                 <div
                   className={`aspect-square w-full rounded-md ${
                     isActive
@@ -87,11 +91,6 @@ export function ActivityCard() {
                       </span>
                     </div>
                   )}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-md">
-                    <span className="text-xs text-white">
-                      {format(date, "MMM d")}
-                    </span>
-                  </div>
                 </div>
               </div>
             );
