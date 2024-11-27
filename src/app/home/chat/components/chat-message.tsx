@@ -205,7 +205,7 @@ export function ChatMessage({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className={`flex ${isAI ? "justify-start" : "justify-end"} ${
-        isAI ? "pl-0 pr-10" : "pl-20 pr-0"
+        isAI ? "pl-1 md:pr-10 pr-2" : "md:pl-20 pl-4 pr-1"
       } relative group`}
     >
       {isAI && (
@@ -218,7 +218,7 @@ export function ChatMessage({
             damping: 20,
             delay: 0.1,
           }}
-          className="relative md:w-[120px] w-[40px] h-[140px] mr-4 flex-shrink-0"
+          className="relative w-[24px] md:w-[120px] h-[140px] mr-1 md:mr-4 flex-shrink-0"
         >
           <Image
             src={Figure}
@@ -239,9 +239,9 @@ export function ChatMessage({
           damping: 30,
           delay: isAI ? 0.2 : 0,
         }}
-        className={`md:max-w-[70%] max-w-[86%] rounded-xl px-6 py-4 relative ${
+        className={`w-full md:max-w-[70%] max-w-[85%] rounded-xl px-2 md:px-6 py-2 md:py-4 relative ${
           isAI
-            ? "bg-[#2A2A2A] shadow-[0_0_15px_rgba(0,0,0,0.2),inset_0_0_80px_rgba(0,0,0,0.3)] border-2 border-[#404040] group-hover:border-[#55DC49]/30 transition-all duration-300"
+            ? "bg-[#2A2A2A] shadow-[0_0_15px_rgba(0,0,0,0.2),inset_0_0_80px_rgba(0,0,0,0.3)] border border-[#404040] group-hover:border-[#55DC49]/30 transition-all duration-300"
             : "bg-transparent"
         } ${isSelected ? "ring-2 ring-[#55DC49] ring-opacity-50" : ""} ${
           selectionMode ? "ring-2 ring-[#55DC49]/30" : ""
@@ -261,7 +261,7 @@ export function ChatMessage({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute -right-12 top-1/2 transform -translate-y-1/2 flex flex-col items-center gap-2"
+            className="absolute -right-8 md:-right-12 top-1/2 transform -translate-y-1/2 flex flex-col items-center gap-2"
           >
             <div className="relative">
               <motion.button
@@ -270,7 +270,7 @@ export function ChatMessage({
                 onHoverStart={() => setIsHoveringNote(true)}
                 onHoverEnd={() => setIsHoveringNote(false)}
                 onClick={handleNoteClick}
-                className={`w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 ${
                   selectionMode
                     ? selectedBlocks.length > 0
                       ? "bg-[#55DC49] text-black"
@@ -279,9 +279,9 @@ export function ChatMessage({
                 }`}
               >
                 {selectionMode && selectedBlocks.length > 0 ? (
-                  <Check className="w-5 h-5" />
+                  <Check className="w-4 h-4 md:w-5 md:h-5" />
                 ) : (
-                  <BookmarkPlus className="w-5 h-5 transform transition-all duration-300 group-hover:scale-110" />
+                  <BookmarkPlus className="w-4 h-4 md:w-5 md:h-5 transform transition-all duration-300 group-hover:scale-110" />
                 )}
               </motion.button>
               <motion.div
@@ -295,7 +295,7 @@ export function ChatMessage({
                   duration: 0.2,
                   ease: "easeOut",
                 }}
-                className="absolute left-full ml-3 top-1 -translate-y-1/2 px-3 py-2 bg-[#55DC49] text-black text-sm font-medium rounded-lg whitespace-nowrap shadow-lg pointer-events-none"
+                className="absolute left-full ml-2 md:ml-3 top-1 -translate-y-1/2 px-2 md:px-3 py-1 md:py-2 bg-[#55DC49] text-black text-xs md:text-sm font-medium rounded-lg whitespace-nowrap shadow-lg pointer-events-none hidden md:block"
               >
                 {selectionMode
                   ? selectedBlocks.length > 0
@@ -309,21 +309,21 @@ export function ChatMessage({
         )}
 
         {selectionMode && selectedBlocks.length > 0 && (
-          <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#55DC49] text-black rounded-full px-3 py-1 text-sm font-medium">
+          <div className="absolute -top-8 md:-top-10 left-1/2 transform -translate-x-1/2 bg-[#55DC49] text-black rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium">
             {selectedBlocks.length} block{selectedBlocks.length > 1 ? "s" : ""}{" "}
             selected
           </div>
         )}
 
         <div
-          className={`text-lg ${
+          className={`text-base md:text-lg ${
             isAI
               ? "font-chalk chalk-effect"
               : "text-[#55DC49] font-handwriting writing-animation"
           }`}
         >
           {isAI ? (
-            <motion.div className="space-y-4">
+            <motion.div className="space-y-3 md:space-y-4">
               {isLoading ? (
                 <motion.span className="inline-block text-[#E8E8E8] opacity-90 chalk-dust">
                   Thinking...
@@ -338,7 +338,7 @@ export function ChatMessage({
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="leading-relaxed"
+              className="leading-relaxed break-words"
             >
               {message.content}
             </motion.p>
@@ -350,7 +350,7 @@ export function ChatMessage({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-2 text-sm text-[#55DC49] opacity-60"
+            className="mt-2 text-xs md:text-sm text-[#55DC49] opacity-60"
           >
             Difficulty: {message.difficulty}
           </motion.div>
@@ -360,7 +360,7 @@ export function ChatMessage({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: isLoading ? 0 : totalAnimationTime }}
-          className={`text-xs mt-2 block ${
+          className={`text-[10px] md:text-xs mt-2 block ${
             isAI ? "text-gray-400" : "text-gray-500"
           }`}
         >

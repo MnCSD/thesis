@@ -36,7 +36,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.3 }}
-      className="sticky bottom-0 z-20 pb-4 pt-2"
+      className="relative z-50 pb-4 pt-2 "
     >
       <motion.div
         animate={{
@@ -44,7 +44,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
             ? "0 0 20px rgba(85, 220, 73, 0.2), inset 0 0 80px rgba(85, 220, 73, 0.03)"
             : "0 0 15px rgba(0, 0, 0, 0.2), inset 0 0 60px rgba(0, 0, 0, 0.1)",
         }}
-        className="relative rounded-xl bg-[#1A1A1A] border border-[#333333] transition-all duration-300 md:max-w-2xl mx-auto w-[80%] md:w-[unset]"
+        className="relative rounded-xl bg-[#1A1A1A] border border-[#333333] transition-all duration-300 md:max-w-2xl mx-auto w-[95%] md:w-[unset]"
       >
         <form onSubmit={handleSubmit} className="relative flex items-center">
           <div className="absolute left-3 flex gap-2">
@@ -63,7 +63,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
               <Pencil className="h-4 w-4" />
             </motion.button>
             <AnimatePresence>
-              {message && (
+              {/* {message && (
                 <motion.button
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -79,7 +79,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                 >
                   <Eraser className="h-4 w-4" />
                 </motion.button>
-              )}
+              )} */}
             </AnimatePresence>
           </div>
 
@@ -102,25 +102,22 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onFocus={() => {
-                setIsWriting(true);
-                setIsFocused(true);
-              }}
+              onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder={
-                disabled ? "Please wait..." : "Write on your notebook..."
-              }
               disabled={disabled}
-              className={`w-full bg-transparent text-[#55DC49] pt-[26px] pl-12 pr-12 py-2.5 focus:outline-none placeholder:text-gray-500
-                s resize-none leading-relaxed h-[70px!important]
-                ${isWriting ? "writing-cursor" : ""}
-                ${disabled ? "opacity-50" : ""}
-                font-handwriting transition-all duration-300`}
+              placeholder={isFocused ? "" : "Type a message..."}
+              rows={1}
+              className={`w-full bg-transparent text-white placeholder-gray-500 resize-none py-4 px-16 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed ${
+                isWriting ? "font-handwriting text-[#55DC49]" : "font-sans"
+              }`}
               style={{
-                backgroundImage: "none",
-                fontFamily: '"Kalam", cursive',
-                fontSize: "1.125rem",
-                lineHeight: "1.5",
+                minHeight: "52px",
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
               }}
             />
           </div>
@@ -130,11 +127,11 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
             whileTap={{ scale: 0.9 }}
             type="submit"
             disabled={!message.trim() || disabled}
-            className={`absolute right-3 p-1.5 rounded-lg transition-all ${
+            className={`absolute right-3 p-1.5 rounded-lg ${
               message.trim() && !disabled
                 ? "text-[#55DC49] hover:bg-[#55DC49]/10"
-                : "text-gray-500"
-            } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                : "text-gray-500 cursor-not-allowed"
+            }`}
           >
             <Send className="h-4 w-4" />
           </motion.button>

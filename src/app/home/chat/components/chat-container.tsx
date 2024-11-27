@@ -117,9 +117,9 @@ export function ChatContainer({
       initial={{ y: 20, opacity: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative z-10 min-h-full flex flex-col max-w-5xl mx-auto px-6"
+      className="relative z-10 h-[calc(100vh-4rem)] flex flex-col max-w-5xl mx-auto px-6"
     >
-      <div className="flex-1 py-8">
+      <div className="flex-1 overflow-y-auto scrollbar-hide py-8">
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -131,7 +131,7 @@ export function ChatContainer({
           </motion.div>
         )}
 
-        <div className="space-y-6 mb-6 overflow-y-auto scrollbar-hide">
+        <div className="space-y-6 mb-6">
           <AnimatePresence>
             {messages
               .slice()

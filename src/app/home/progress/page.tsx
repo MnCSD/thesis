@@ -5,99 +5,67 @@ import { Trophy, Clock, TrendingUp } from "lucide-react";
 import { StatsCard } from "./components/stats-card";
 import { SubjectCard } from "./components/subject-card";
 import { ActivityCard } from "./components/activity-card";
-import { GoalsCard } from "./components/goals-card";
-
-const subjects = [
-  { name: "Mathematics", progress: 85, hours: 24, streak: 7 },
-  { name: "Physics", progress: 65, hours: 18, streak: 4 },
-  { name: "Chemistry", progress: 72, hours: 20, streak: 5 },
-];
+import { useGetPreferences } from "@/features/preferences/use-get-preferences";
+import { formatTime } from "../topics/[topicId]/modules/components/module-review";
+import { useUserTopics } from "@/features/modules/use-user-topics";
 
 export default function ProgressPage() {
+  const { data: preferences } = useGetPreferences();
+  const userTopics = useUserTopics();
+
+  // Calculate total progress and time across all topics
+  const totalTimeSpent =
+    userTopics?.reduce((acc, topic) => acc + topic.timeSpent, 0) || 0;
+  const averageProgress = userTopics?.length
+    ? Math.round(
+        userTopics.reduce((acc, topic) => acc + topic.progress, 0) /
+          userTopics.length
+      )
+    : 0;
+
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
-      <motion.div
-        className="space-y-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-3xl font-bold text-white">
-          Your Learning <span className="text-[#55DC49]">Progress</span>
-        </h1>
-        <p className="text-gray-400">
-          Track your achievements and learning journey
-        </p>
-      </motion.div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="max-w-5xl mx-auto px-6 py-8"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <StatsCard
+          subtitle=""
+          title="Total Time"
+          value={formatTime(totalTimeSpent)}
+          icon={Clock}
+        />
+        <StatsCard
+          subtitle=""
+          title="Average Progress"
+          value={`${averageProgress}%`}
+          icon={TrendingUp}
+        />
+        <StatsCard
+          subtitle=""
+          title="Topics Started"
+          value={userTopics?.length || 0}
+          icon={Trophy}
+        />
+      </div>
 
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, staggerChildren: 0.1 }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <StatsCard
-            icon={Trophy}
-            value="89%"
-            title="Overall Progress"
-            subtitle="Excellent performance!"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {userTopics?.map((topic, index) => (
+          <SubjectCard
+            key={topic.topicId}
+            name={topic.name}
+            progress={topic.progress}
+            timeInSeconds={topic.timeSpent}
+            index={index}
           />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <StatsCard
-            icon={Clock}
-            value="62h"
-            title="Total Time"
-            subtitle="This month"
-          />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <StatsCard
-            icon={TrendingUp}
-            value="5"
-            title="Day Streak"
-            subtitle="Keep it up!"
-          />
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        className="space-y-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h2 className="text-2xl font-bold text-white">Subject Progress</h2>
-
-        {subjects.map((subject, index) => (
-          <SubjectCard key={subject.name} {...subject} index={index} />
         ))}
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="grid md:grid-cols-2 gap-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="space-y-8">
+        <h2 className="text-xl font-semibold text-white">Recent Activity</h2>
         <ActivityCard />
-        <GoalsCard />
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 }
