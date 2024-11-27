@@ -72,7 +72,10 @@ export function ModuleContent({
 
   if (
     !moduleContent ||
-    (topicId !== "Computer Science" && topicId !== "Mathematics")
+    (topicId !== "Computer Science" &&
+      topicId !== "Mathematics" &&
+      topicId !== "Biology" &&
+      topicId !== "Physics")
   ) {
     return (
       <div className="text-center p-8">

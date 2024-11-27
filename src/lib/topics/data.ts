@@ -1,5 +1,7 @@
+import { biologyModules } from "./modules/biology";
 import { computerScienceModules } from "./modules/computer-science";
 import { mathematicsModules } from "./modules/mathematics";
+import { physicsModules } from "./modules/physics";
 
 export interface TopicContent {
   id: string;
@@ -47,12 +49,24 @@ export const topicContents: Record<string, TopicContent> = {
     title: "Mathematics",
     sections: mathematicsModules[0].slides,
   },
+  Biology: {
+    id: "biology",
+    title: "Biology",
+    sections: biologyModules[0].slides,
+  },
+  Physics: {
+    id: "physics",
+    title: "Physics",
+    sections: physicsModules[0].slides,
+  },
 };
 
 // Module contents for new module-based system
 export const moduleContents: Record<string, ModuleContent[]> = {
   "Computer Science": computerScienceModules,
   Mathematics: mathematicsModules,
+  Biology: biologyModules,
+  Physics: physicsModules,
 };
 
 export const getTopicContent = (topicId: string): TopicContent | undefined => {

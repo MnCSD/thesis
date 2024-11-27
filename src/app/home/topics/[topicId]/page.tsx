@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useModuleProgress } from "@/features/modules/use-module-progress";
+import { moduleContents } from "@/lib/topics/data";
 
 interface Module {
   id: string;
@@ -304,7 +305,10 @@ export default function TopicDetail({
                   </div>
                 </motion.div>
 
-                {topicId === "Computer Science" || topicId === "Mathematics" ? (
+                {topicId === "Computer Science" ||
+                topicId === "Mathematics" ||
+                topicId === "Physics" ||
+                topicId === "Biology" ? (
                   <motion.div className="space-y-6" variants={stagger}>
                     {modules.map((module, index) => (
                       <motion.div
@@ -442,7 +446,25 @@ export default function TopicDetail({
                             />
                             <div className="flex justify-between mt-2">
                               <span className="text-xs text-gray-400">
-                                1 of 10 sections
+                                {index === 0 &&
+                                  `${Math.floor(
+                                    (introductionProgress?.progress?.progress ||
+                                      0) / 10
+                                  )} of 10 slides`}
+                                {index === 1 &&
+                                  `${Math.floor(
+                                    (coreProgress?.progress?.progress || 0) / 10
+                                  )} of 10 slides`}
+                                {index === 2 &&
+                                  `${Math.floor(
+                                    (advancedProgress?.progress?.progress ||
+                                      0) / 10
+                                  )} of 10 slides`}
+                                {index === 3 &&
+                                  `${Math.floor(
+                                    (practicalProgress?.progress?.progress ||
+                                      0) / 10
+                                  )} of 10 slides`}
                               </span>
                               <span className="text-xs text-[#55DC49]">
                                 {index === 0 &&
@@ -481,7 +503,10 @@ export default function TopicDetail({
             </Card>
           </motion.div>
 
-          {topicId === "Computer Science" || topicId === "Mathematics" ? (
+          {topicId === "Computer Science" ||
+          topicId === "Mathematics" ||
+          topicId === "Physics" ||
+          topicId === "Biology" ? (
             <motion.div variants={slideIn} className="lg:col-span-1">
               <Card className="bg-[#1A1A1A]/50 backdrop-blur-xl border-[#55DC49]/10 p-8 sticky top-8">
                 <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">

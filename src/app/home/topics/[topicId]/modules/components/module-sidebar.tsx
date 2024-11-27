@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
+import { Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   MessageSquare,
@@ -155,58 +156,29 @@ export function ModuleSidebar({ status, stats, progress }: ModuleSidebarProps) {
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.4 }}
-        className="space-y-4"
-      >
-        <h3 className="text-lg font-semibold text-white">Resources</h3>
-        {resources.map((resource, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 + index * 0.1 }}
-          >
-            <Card
-              className="bg-[#232323]/80 backdrop-blur border-[#55DC49]/10 p-4 hover:border-[#55DC49]/30
-              transition-all duration-300 cursor-pointer group"
-            >
-              <div className="flex items-center gap-4">
-                <div
-                  className="w-10 h-10 rounded-lg bg-[#55DC49]/10 flex items-center justify-center
-                  group-hover:bg-[#55DC49]/20 transition-colors duration-300"
-                >
-                  <resource.icon className="w-5 h-5 text-[#55DC49]" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-white group-hover:text-[#55DC49] transition-colors">
-                    {resource.title}
-                  </h4>
-                  <p className="text-sm text-gray-400">
-                    {resource.description}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.7 }}
       >
-        <Card className="bg-[#1A1A1A]/50 backdrop-blur-xl border-[#55DC49]/10 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white">Need Help?</h3>
-            <Users className="w-5 h-5 text-[#55DC49]" />
+        <Card className="bg-[#181818] backdrop-blur-xl border-[#55DC49]/20 p-6 space-y-4 hover:border-[#55DC49]/40 transition-all duration-300 group">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Brain className="w-6 h-6 text-[#55DC49] group-hover:scale-110 transition-transform" />
+              <h3 className="text-lg font-semibold text-white group-hover:text-[#55DC49] transition-colors">
+                AI Learning Assistant
+              </h3>
+            </div>
           </div>
-          <p className="text-gray-300 mb-4">
-            Stuck on a concept? Our community and instructors are here to help!
+          <p className="text-gray-300 text-sm leading-relaxed">
+            Feeling stuck or need guidance in a knowledge check? Press the{" "}
+            <Button
+              variant="outline"
+              className="bg-[#55DC49]/10 hover:bg-[#55DC49]/20 
+                text-[#55DC49] border-[#55DC49]/30 hover:border-[#55DC49]/50
+                transition-all duration-300 group mx-2 w-[45px]"
+            >
+              <Brain className="w-4 h-4 group-hover:animate-pulse" />
+            </Button>
+            to get instant help.
           </p>
-          <Button className="w-full bg-[#55DC49] hover:bg-[#3AA831] text-black">
-            Ask a Question
-          </Button>
         </Card>
       </motion.div>
     </div>
