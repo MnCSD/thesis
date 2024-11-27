@@ -73,7 +73,6 @@ export function ModuleContent({
   if (
     !moduleContent ||
     (topicId !== "Computer Science" &&
-      topicId !== "Mathematics" &&
       topicId !== "Biology" &&
       topicId !== "Physics")
   ) {

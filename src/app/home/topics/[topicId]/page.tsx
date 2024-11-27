@@ -306,7 +306,6 @@ export default function TopicDetail({
                 </motion.div>
 
                 {topicId === "Computer Science" ||
-                topicId === "Mathematics" ||
                 topicId === "Physics" ||
                 topicId === "Biology" ? (
                   <motion.div className="space-y-6" variants={stagger}>
@@ -464,7 +463,7 @@ export default function TopicDetail({
                                   `${Math.floor(
                                     (practicalProgress?.progress?.progress ||
                                       0) / 10
-                                  )} of 10 slides`}
+                                  )} of ${moduleContents?.slides?.length} slides`}
                               </span>
                               <span className="text-xs text-[#55DC49]">
                                 {index === 0 &&
@@ -504,7 +503,6 @@ export default function TopicDetail({
           </motion.div>
 
           {topicId === "Computer Science" ||
-          topicId === "Mathematics" ||
           topicId === "Physics" ||
           topicId === "Biology" ? (
             <motion.div variants={slideIn} className="lg:col-span-1">
